@@ -92,6 +92,33 @@
     letter-spacing: 0.05em;
   }
 
+  /* Dyslexia Orton-Gillingham Module */
+  .dyslexia-module {
+    background-color: #FFFACD;
+    font-family: 'OpenDyslexic', 'Comic Sans MS', cursive;
+    color: #1F2937;
+    line-height: 1.8;
+    letter-spacing: 0.12em;
+    word-spacing: 0.15em;
+  }
+
+  .dyslexia-module button {
+    min-height: 60px;
+    min-width: 60px;
+    font-family: 'OpenDyslexic', 'Comic Sans MS', cursive;
+  }
+
+  .dyslexia-module p,
+  .dyslexia-module span,
+  .dyslexia-module h1,
+  .dyslexia-module h2,
+  .dyslexia-module h3 {
+    font-style: normal;
+    text-decoration: none;
+    text-align: left;
+    text-transform: none;
+  }
+
 
   /* Shared */
   .game-container {

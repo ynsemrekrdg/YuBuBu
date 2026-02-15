@@ -44,6 +44,13 @@ class ActivityType(str, Enum):
     SUBTRACTION_CRA = "subtraction_cra"
     WORD_PROBLEM = "word_problem"
     NUMBER_COMPARISON = "number_comparison"
+    # Dyslexia - Orton-Gillingham
+    RHYME_MATCHING = "rhyme_matching"
+    SYLLABLE_SEGMENTATION = "syllable_segmentation"
+    LETTER_SOUND = "letter_sound"
+    SIGHT_WORD = "sight_word"
+    REPEATED_READING = "repeated_reading"
+    COMPREHENSION = "comprehension"
 
 
 class DifficultyLevel(int, Enum):

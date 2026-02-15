@@ -40,7 +40,7 @@ class Settings(BaseSettings):
     OPENAI_MAX_TOKENS: int = 2048
 
     # CORS
-    CORS_ORIGINS: str = "http://localhost:3000,http://localhost:19006,http://localhost:8081"
+    CORS_ORIGINS: str = "http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:19006,http://localhost:8081"
 
     # Rate Limiting
     AI_RATE_LIMIT: str = "20/minute"

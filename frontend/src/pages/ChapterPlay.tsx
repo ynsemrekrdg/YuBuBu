@@ -9,6 +9,12 @@ import { useAuthStore } from '../store/useAuthStore';
 import ProgressBar from '../components/shared/ProgressBar';
 import WordMatchGame from '../components/dyslexia/WordMatchGame';
 import LetterTracingGame from '../components/dyslexia/LetterTracingGame';
+import RhymeMatchGame from '../components/dyslexia/RhymeMatchGame';
+import SyllableSegmentGame from '../components/dyslexia/SyllableSegmentGame';
+import LetterSoundGame from '../components/dyslexia/LetterSoundGame';
+import SightWordFlashcard from '../components/dyslexia/SightWordFlashcard';
+import RepeatedReadingGame from '../components/dyslexia/RepeatedReadingGame';
+import ComprehensionGame from '../components/dyslexia/ComprehensionGame';
 import LetterFormingGame from '../components/dysgraphia/LetterFormingGame';
 import HandwritingPracticeGame from '../components/dysgraphia/HandwritingPracticeGame';
 import NumberLineGame from '../components/dyscalculia/NumberLineGame';
@@ -188,11 +194,23 @@ export default function ChapterPlay() {
   );
 }
 
-type GameType = 'wordMatch' | 'letterTracing' | 'letterForming' | 'handwriting' | 'numberLine' | 'counting' | 'concreteCount' | 'numberComparison' | 'placeValue' | 'additionCRA' | 'subtractionCRA' | 'wordProblem';
+type GameType = 'wordMatch' | 'letterTracing' | 'rhymeMatch' | 'syllableSegment' | 'letterSound' | 'sightWordFlashcard' | 'repeatedReading' | 'comprehension' | 'letterForming' | 'handwriting' | 'numberLine' | 'counting' | 'concreteCount' | 'numberComparison' | 'placeValue' | 'additionCRA' | 'subtractionCRA' | 'wordProblem';
+
+const DYSLEXIA_VALID_GAMES: GameType[] = ['wordMatch', 'letterTracing', 'rhymeMatch', 'syllableSegment', 'letterSound', 'sightWordFlashcard', 'repeatedReading', 'comprehension'];
 
 function getGamesForDifficulty(difficulty: DifficultyType, contentConfig?: ContentConfig): GameType[] {
   switch (difficulty) {
-    case 'dyslexia': return ['wordMatch', 'letterTracing'];
+    case 'dyslexia': {
+      // Use chapter-specific games from content_config if available
+      const configGames = contentConfig?.activity?.games as string[] | undefined;
+      if (configGames && configGames.length > 0) {
+        const validGames: GameType[] = configGames.filter(
+          (g): g is GameType => DYSLEXIA_VALID_GAMES.includes(g as GameType)
+        );
+        if (validGames.length > 0) return validGames;
+      }
+      return ['wordMatch', 'letterTracing'];
+    }
     case 'dysgraphia': return ['letterForming', 'handwriting'];
     case 'dyscalculia': {
       // Use chapter-specific games from content_config if available
@@ -213,6 +231,12 @@ function renderGame(game: GameType, difficulty: DifficultyType, onComplete: (sco
   switch (game) {
     case 'wordMatch': return <WordMatchGame {...props} />;
     case 'letterTracing': return <LetterTracingGame {...props} />;
+    case 'rhymeMatch': return <RhymeMatchGame {...props} />;
+    case 'syllableSegment': return <SyllableSegmentGame {...props} />;
+    case 'letterSound': return <LetterSoundGame {...props} />;
+    case 'sightWordFlashcard': return <SightWordFlashcard {...props} />;
+    case 'repeatedReading': return <RepeatedReadingGame {...props} />;
+    case 'comprehension': return <ComprehensionGame {...props} />;
     case 'letterForming': return <LetterFormingGame {...props} />;
     case 'handwriting': return <HandwritingPracticeGame {...props} />;
     case 'numberLine': return <NumberLineGame {...props} />;
