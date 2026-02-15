@@ -1,0 +1,170 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── OpenDyslexic Font Face ─── */
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ─── Base Styles ─── */
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  body {
+    @apply font-body text-gray-800 bg-gray-50 antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-4 outline-offset-2 outline-yellow-400 rounded;
+  }
+}
+
+/* ─── Difficulty Theme Classes ─── */
+@layer components {
+  /* Dyslexia */
+  .theme-dyslexia {
+    font-family: 'OpenDyslexic', 'Comic Sans MS', cursive;
+    font-size: 18px;
+    line-height: 1.8;
+    background-color: #FFFACD;
+    color: #1A1A2E;
+    letter-spacing: 0.05em;
+    word-spacing: 0.15em;
+  }
+
+  .theme-dyslexia .chapter-card {
+    @apply bg-[#FFF8E1] border-2 border-[#FF6B35] rounded-2xl shadow-lg;
+  }
+
+  /* Autism */
+  .theme-autism {
+    font-family: 'Nunito', sans-serif;
+    background-color: #F0FAFB;
+    color: #1E3A4C;
+  }
+
+  .theme-autism .chapter-card {
+    @apply bg-[#E6F7F7] border-2 border-[#2B8A9E] rounded-xl shadow-md;
+  }
+
+  /* Dyscalculia */
+  .theme-dyscalculia {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #FFF5F7;
+    color: #2D1B4E;
+  }
+
+  .theme-dyscalculia .chapter-card {
+    @apply bg-[#F3E8FF] border-2 border-[#8B5CF6] rounded-2xl shadow-lg;
+  }
+
+  /* ADHD */
+  .theme-adhd {
+    font-family: 'Fredoka One', cursive;
+    background-color: #FFFBF0;
+    color: #1A1A2E;
+  }
+
+  .theme-adhd .chapter-card {
+    @apply bg-[#FFF3E0] border-2 border-[#FF6B00] rounded-2xl shadow-lg;
+  }
+
+  /* Shared */
+  .game-container {
+    @apply min-h-[60vh] flex flex-col items-center justify-center p-4 rounded-2xl;
+  }
+
+  .score-popup {
+    @apply fixed top-20 right-8 z-50 text-3xl font-bold pointer-events-none;
+  }
+
+  .badge-card {
+    @apply flex flex-col items-center gap-2 p-4 rounded-xl border-2 text-center;
+  }
+
+  /* AI Chat Bubble */
+  .chat-bubble-user {
+    @apply bg-blue-500 text-white rounded-2xl rounded-br-sm px-4 py-3 max-w-[80%] ml-auto;
+  }
+
+  .chat-bubble-ai {
+    @apply bg-white text-gray-800 rounded-2xl rounded-bl-sm px-4 py-3 max-w-[80%] mr-auto border border-gray-200 shadow-sm;
+  }
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 rounded;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded hover:bg-gray-400;
+}
+
+/* ─── Accessibility ─── */
+.high-contrast {
+  filter: contrast(1.2);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ─── Number Line ─── */
+.number-line {
+  @apply relative flex items-center justify-between w-full h-2 bg-gray-300 rounded-full;
+}
+
+.number-line-dot {
+  @apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold -mt-3 cursor-pointer transition-all;
+}
+
+/* ─── Game Animations ─── */
+@keyframes correctAnswer {
+  0% { transform: scale(1); background-color: inherit; }
+  50% { transform: scale(1.1); background-color: #22c55e; }
+  100% { transform: scale(1); background-color: #22c55e; }
+}
+
+@keyframes wrongAnswer {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-10px); }
+  40% { transform: translateX(10px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+}
+
+.animate-correct {
+  animation: correctAnswer 0.6s ease-out;
+}
+
+.animate-wrong {
+  animation: wrongAnswer 0.5s ease-in-out;
+}
