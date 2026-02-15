@@ -18,13 +18,17 @@ class RegisterRequest(BaseModel):
     name: str = Field(..., min_length=2, max_length=255)
     password: str = Field(..., min_length=8, max_length=128)
     role: UserRole = UserRole.STUDENT
+    learning_difficulty: Optional[str] = None
+    age: Optional[int] = Field(None, ge=3, le=18)
 
     model_config = {"json_schema_extra": {
         "example": {
             "email": "student@example.com",
             "name": "Ali Yılmaz",
             "password": "güçlüşifre123",
-            "role": "student"
+            "role": "student",
+            "learning_difficulty": "dyslexia",
+            "age": 7
         }
     }}
 

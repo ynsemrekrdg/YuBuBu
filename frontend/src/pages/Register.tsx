@@ -41,7 +41,9 @@ export default function Register() {
         email,
         password,
         role,
-      });
+        learning_difficulty: role === 'student' ? difficulty : undefined,
+        age: role === 'student' ? 7 : undefined,
+      } as any);
       await setAuth(res);
       navigate('/');
     } catch (err: any) {

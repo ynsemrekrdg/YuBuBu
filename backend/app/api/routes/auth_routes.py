@@ -46,6 +46,21 @@ async def register(
             role=request.role,
         )
 
+        # If student role and learning_difficulty provided, create student profile
+        if user.role == "student" and request.learning_difficulty:
+            try:
+                from app.domain.entities.enums import LearningDifficulty
+                difficulty = LearningDifficulty(request.learning_difficulty)
+                await student_service.create_profile(
+                    user_id=user.id,
+                    age=request.age or 7,
+                    learning_difficulty=difficulty,
+                    preferences={},
+                )
+                logger.info(f"Student profile created for user {user.id}")
+            except Exception as profile_err:
+                logger.warning(f"Could not create student profile: {profile_err}")
+
         # Generate token
         token = auth_service.create_access_token(user.id, user.role)
 

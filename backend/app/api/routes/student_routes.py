@@ -1,6 +1,7 @@
 """
 Student API routes.
 GET /api/students/{id}
+GET /api/students/by-user/{user_id}
 PUT /api/students/{id}
 GET /api/students/{id}/progress
 POST /api/students/profile (create student profile)
@@ -62,6 +63,39 @@ async def create_student_profile(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e),
         )
+
+
+@router.get(
+    "/by-user/{user_id}",
+    response_model=StudentProfileResponse,
+    summary="Kullanıcı ID ile öğrenci profili getir",
+    description="Belirtilen kullanıcı ID'sine ait öğrenci profilini döner.",
+)
+async def get_student_by_user_id(
+    user_id: UUID,
+    current_user: User = Depends(get_current_active_user),
+    student_service: StudentService = Depends(get_student_service),
+):
+    """Get a student profile by user ID."""
+    profile = await student_service.get_profile_by_user_id(user_id)
+    if not profile:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Öğrenci profili bulunamadı",
+        )
+    return StudentProfileResponse(
+        id=profile.id,
+        user_id=profile.user_id,
+        age=profile.age,
+        learning_difficulty=profile.learning_difficulty,
+        current_level=profile.current_level,
+        total_score=profile.total_score,
+        preferences=profile.preferences,
+        streak_days=profile.streak_days,
+        last_activity_date=profile.last_activity_date,
+        created_at=profile.created_at,
+        updated_at=profile.updated_at,
+    )
 
 
 @router.get(

@@ -697,72 +697,78 @@ async def seed_database():
     async with async_session_factory() as session:
         # Check if data already exists
         from sqlalchemy import select, func
-        result = await session.execute(select(func.count(UserModel.id)))
-        count = result.scalar()
-        if count and count > 0:
+        user_count_result = await session.execute(select(func.count(UserModel.id)))
+        user_count = user_count_result.scalar() or 0
+
+        chapter_count_result = await session.execute(select(func.count(ChapterModel.id)))
+        chapter_count = chapter_count_result.scalar() or 0
+
+        if user_count > 0 and chapter_count > 0:
             logger.info("Database already has data. Skipping seed.")
             return
 
-        # Create users
+        # Create users (if none exist)
         created_users = {}
-        for user_data in SEED_USERS:
-            user_model = UserModel(
-                id=uuid.uuid4(),
-                email=user_data["email"],
-                name=user_data["name"],
-                hashed_password=AuthService.hash_password(user_data["password"]),
-                role=UserRole(user_data["role"]),
-                is_active=True,
-            )
-            session.add(user_model)
-            created_users[user_data["email"]] = user_model
-            logger.info(f"  Created user: {user_data['email']} ({user_data['role']})")
-
-        await session.flush()
-
-        # Create student profiles
-        for user_data in SEED_USERS:
-            if "profile" in user_data:
-                user_model = created_users[user_data["email"]]
-                profile_data = user_data["profile"]
-                profile_model = StudentProfileModel(
+        if user_count == 0:
+            for user_data in SEED_USERS:
+                user_model = UserModel(
                     id=uuid.uuid4(),
-                    user_id=user_model.id,
-                    age=profile_data["age"],
-                    learning_difficulty=profile_data["learning_difficulty"],
-                    current_level=1,
-                    total_score=0,
-                    preferences=profile_data["preferences"],
-                    streak_days=0,
+                    email=user_data["email"],
+                    name=user_data["name"],
+                    hashed_password=AuthService.hash_password(user_data["password"]),
+                    role=UserRole(user_data["role"]),
+                    is_active=True,
                 )
-                session.add(profile_model)
+                session.add(user_model)
+                created_users[user_data["email"]] = user_model
+                logger.info(f"  Created user: {user_data['email']} ({user_data['role']})")
+
+            await session.flush()
+
+            # Create student profiles
+            for user_data in SEED_USERS:
+                if "profile" in user_data:
+                    user_model = created_users[user_data["email"]]
+                    profile_data = user_data["profile"]
+                    profile_model = StudentProfileModel(
+                        id=uuid.uuid4(),
+                        user_id=user_model.id,
+                        age=profile_data["age"],
+                        learning_difficulty=profile_data["learning_difficulty"],
+                        current_level=1,
+                        total_score=0,
+                        preferences=profile_data["preferences"],
+                        streak_days=0,
+                    )
+                    session.add(profile_model)
+                    logger.info(
+                        f"  Created profile: {user_data['name']} "
+                        f"({profile_data['learning_difficulty'].value})"
+                    )
+
+            await session.flush()
+
+        # Create chapters (if none exist)
+        if chapter_count == 0:
+            for ch_data in CHAPTERS:
+                chapter_model = ChapterModel(
+                    id=uuid.uuid4(),
+                    difficulty_type=ch_data["difficulty_type"],
+                    chapter_number=ch_data["chapter_number"],
+                    title=ch_data["title"],
+                    description=ch_data["description"],
+                    content_config=ch_data["content_config"],
+                    activity_type=ch_data["activity_type"],
+                    difficulty_level=ch_data["difficulty_level"],
+                    expected_duration_minutes=ch_data["expected_duration_minutes"],
+                    min_score_to_pass=ch_data["min_score_to_pass"],
+                    is_active=True,
+                )
+                session.add(chapter_model)
                 logger.info(
-                    f"  Created profile: {user_data['name']} "
-                    f"({profile_data['learning_difficulty'].value})"
+                    f"  Created chapter: {ch_data['title']} "
+                    f"({ch_data['difficulty_type'].value} #{ch_data['chapter_number']})"
                 )
-
-        await session.flush()
-
-        # Create chapters
-        for ch_data in CHAPTERS:
-            chapter_model = ChapterModel(
-                id=uuid.uuid4(),
-                difficulty_type=ch_data["difficulty_type"],
-                chapter_number=ch_data["chapter_number"],
-                title=ch_data["title"],
-                description=ch_data["description"],
-                content_config=ch_data["content_config"],
-                activity_type=ch_data["activity_type"],
-                difficulty_level=ch_data["difficulty_level"],
-                expected_duration_minutes=ch_data["expected_duration_minutes"],
-                min_score_to_pass=ch_data["min_score_to_pass"],
-                is_active=True,
-            )
-            session.add(chapter_model)
-            logger.info(
-                f"  Created chapter: {ch_data['title']} "
-                f"({ch_data['difficulty_type'].value} #{ch_data['chapter_number']})"
-            )
 
         await session.commit()
         logger.info("✅ Database seeding completed!")
