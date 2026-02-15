@@ -63,7 +63,7 @@ def upgrade() -> None:
         sa.Column("age", sa.Integer(), nullable=False),
         sa.Column(
             "learning_difficulty",
-            sa.Enum("dyslexia", "autism", "dyscalculia", "adhd", name="learningdifficulty"),
+            sa.Enum("dyslexia", "dysgraphia", "dyscalculia", name="learningdifficulty"),
             nullable=False,
         ),
         sa.Column("current_level", sa.Integer(), nullable=False, server_default="1"),
@@ -97,7 +97,7 @@ def upgrade() -> None:
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
         sa.Column(
             "difficulty_type",
-            sa.Enum("dyslexia", "autism", "dyscalculia", "adhd", name="learningdifficulty"),
+            sa.Enum("dyslexia", "dysgraphia", "dyscalculia", name="learningdifficulty"),
             nullable=False,
         ),
         sa.Column("chapter_number", sa.Integer(), nullable=False),

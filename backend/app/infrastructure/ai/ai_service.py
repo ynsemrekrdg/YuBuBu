@@ -254,8 +254,7 @@ MEVCUT ÖĞRENCİ DURUMU:
         """Get a difficulty-specific encouragement message."""
         messages = {
             LearningDifficulty.DYSLEXIA: "Her kelimeyi doğru okuduğunda daha da güçleniyorsun! 📚",
-            LearningDifficulty.AUTISM: "Adım adım ilerliyorsun, harika gidiyorsun! ⭐",
+            LearningDifficulty.DYSGRAPHIA: "Her harfi yazdığında daha da ustalaşıyorsun! ✍️",
             LearningDifficulty.DYSCALCULIA: "Sayılar seninle dost, birlikte çözelim! 🔢",
-            LearningDifficulty.ADHD: "Odaklanabildin, süpersin! Bir sonraki hedefe! 🎯",
         }
         return messages.get(difficulty, "Çok iyi gidiyorsun! 🌟")

@@ -9,9 +9,8 @@ interface AvatarProps {
 
 const bgColors: Record<string, string> = {
   dyslexia: 'bg-dyslexia-primary',
-  autism: 'bg-autism-primary',
+  dysgraphia: 'bg-dysgraphia-primary',
   dyscalculia: 'bg-dyscalculia-primary',
-  adhd: 'bg-adhd-primary',
   default: 'bg-yub-500',
 };
 
@@ -24,9 +23,8 @@ const sizeMap: Record<string, string> = {
 
 const emojis: Record<string, string> = {
   dyslexia: '📖',
-  autism: '🧩',
+  dysgraphia: '✍️',
   dyscalculia: '🔢',
-  adhd: '⚡',
 };
 
 export default function Avatar({ name, difficulty, size = 'md', className = '' }: AvatarProps) {

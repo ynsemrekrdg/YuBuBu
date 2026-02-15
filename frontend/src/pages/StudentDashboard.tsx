@@ -7,9 +7,8 @@ import { useChapters } from '../hooks/useChapters';
 import { useStudentProgress, useAnalytics } from '../hooks/useProgress';
 import ProgressBar from '../components/shared/ProgressBar';
 import DyslexiaChapterCard from '../components/dyslexia/DyslexiaChapterCard';
-import AutismChapterCard from '../components/autism/AutismChapterCard';
+import DysgraphiaChapterCard from '../components/dysgraphia/DysgraphiaChapterCard';
 import DyscalculiaChapterCard from '../components/dyscalculia/DyscalculiaChapterCard';
-import AdhdChapterCard from '../components/adhd/AdhdChapterCard';
 import type { DifficultyType, Chapter, ProgressRecord, ChapterListResponse, ProgressListResponse, AnalyticsResponse } from '../types';
 import { levelFromScore, getEncouragement } from '../utils/gamification';
 import { getThemeClass } from '../utils/accessibility';
@@ -47,16 +46,14 @@ export default function StudentDashboard() {
     switch (difficulty) {
       case 'dyslexia':
         return <DyslexiaChapterCard key={chapter.id} chapter={chapter} progress={progress} onPlay={onPlay} index={index} />;
-      case 'autism':
-        return <AutismChapterCard key={chapter.id} chapter={chapter} progress={progress} onPlay={onPlay} index={index} />;
+      case 'dysgraphia':
+        return <DysgraphiaChapterCard key={chapter.id} chapter={chapter} progress={progress} onPlay={onPlay} index={index} />;
       case 'dyscalculia':
         return <DyscalculiaChapterCard key={chapter.id} chapter={chapter} progress={progress} onPlay={onPlay} index={index} />;
-      case 'adhd':
-        return <AdhdChapterCard key={chapter.id} chapter={chapter} progress={progress} onPlay={onPlay} index={index} />;
     }
   };
 
-  const greetingEmoji = difficulty === 'dyslexia' ? '📖' : difficulty === 'autism' ? '🧩' : difficulty === 'dyscalculia' ? '🔢' : '⚡';
+  const greetingEmoji = difficulty === 'dyslexia' ? '📖' : difficulty === 'dysgraphia' ? '✍️' : '🔢';
 
   return (
     <div className={`min-h-screen ${themeClass}`}>

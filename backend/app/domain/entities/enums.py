@@ -17,9 +17,8 @@ class UserRole(str, Enum):
 class LearningDifficulty(str, Enum):
     """Types of learning difficulties supported by the platform."""
     DYSLEXIA = "dyslexia"
-    AUTISM = "autism"
+    DYSGRAPHIA = "dysgraphia"
     DYSCALCULIA = "dyscalculia"
-    ADHD = "adhd"
 
 
 class ActivityType(str, Enum):
@@ -30,20 +29,16 @@ class ActivityType(str, Enum):
     READING_EXERCISE = "reading_exercise"
     PHONICS_GAME = "phonics_game"
     STEP_BY_STEP = "step_by_step"
-    VISUAL_SCHEDULE = "visual_schedule"
-    ROUTINE_ACTIVITY = "routine_activity"
-    SOCIAL_STORY = "social_story"
-    PATTERN_RECOGNITION = "pattern_recognition"
+    LETTER_TRACING = "letter_tracing"
+    HANDWRITING_PRACTICE = "handwriting_practice"
+    STROKE_ORDER = "stroke_order"
+    FINE_MOTOR = "fine_motor"
+    COPY_TEXT = "copy_text"
     NUMBER_LINE = "number_line"
     VISUAL_MATH = "visual_math"
     SHAPE_LEARNING = "shape_learning"
     CONCRETE_COUNTING = "concrete_counting"
     GRAPH_EXERCISE = "graph_exercise"
-    QUICK_CHALLENGE = "quick_challenge"
-    REWARD_GAME = "reward_game"
-    FOCUS_EXERCISE = "focus_exercise"
-    TIMER_ACTIVITY = "timer_activity"
-    BADGE_QUEST = "badge_quest"
 
 
 class DifficultyLevel(int, Enum):

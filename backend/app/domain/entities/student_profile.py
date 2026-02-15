@@ -41,16 +41,16 @@ class StudentProfile:
                 "reading_guide": True,
                 "syllable_highlight": True,
             },
-            LearningDifficulty.AUTISM: {
-                "predictable_layout": True,
-                "minimal_animations": True,
-                "clear_instructions": True,
-                "visual_schedule": True,
-                "sensory_safe_colors": True,
-                "background_color": "#F0F4F8",
-                "text_color": "#2D3748",
-                "transition_warnings": True,
-                "routine_reminders": True,
+            LearningDifficulty.DYSGRAPHIA: {
+                "font_family": "Nunito",
+                "font_size": 18,
+                "wide_line_spacing": True,
+                "dotted_guidelines": True,
+                "stroke_guides": True,
+                "background_color": "#F0FAFB",
+                "text_color": "#1E3A4C",
+                "motor_exercises": True,
+                "letter_tracing": True,
             },
             LearningDifficulty.DYSCALCULIA: {
                 "visual_math_tools": True,
@@ -63,18 +63,7 @@ class StudentProfile:
                 "calculator_available": True,
                 "manipulatives": True,
             },
-            LearningDifficulty.ADHD: {
-                "short_activities": True,
-                "max_activity_minutes": 10,
-                "instant_rewards": True,
-                "colorful_interface": True,
-                "progress_bars_visible": True,
-                "gamification_enhanced": True,
-                "background_color": "#FFF5F5",
-                "text_color": "#742A2A",
-                "break_reminders": True,
-                "timer_visible": True,
-            },
+
         }
         return defaults.get(self.learning_difficulty, {})
 

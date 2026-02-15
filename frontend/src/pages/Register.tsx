@@ -14,9 +14,8 @@ const ROLES: { value: UserRole; label: string; emoji: string; desc: string }[] =
 
 const DIFFICULTIES: { value: LearningDifficulty; label: string; emoji: string; color: string }[] = [
   { value: 'dyslexia', label: 'Disleksi', emoji: '📖', color: 'bg-dyslexia-primary' },
-  { value: 'autism', label: 'Otizm', emoji: '🧩', color: 'bg-autism-primary' },
+  { value: 'dysgraphia', label: 'Disgrafi', emoji: '✍️', color: 'bg-dysgraphia-primary' },
   { value: 'dyscalculia', label: 'Diskalkuli', emoji: '🔢', color: 'bg-dyscalculia-primary' },
-  { value: 'adhd', label: 'DEHB', emoji: '⚡', color: 'bg-adhd-primary' },
 ];
 
 export default function Register() {

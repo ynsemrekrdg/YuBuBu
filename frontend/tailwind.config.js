@@ -12,14 +12,14 @@ export default {
           secondary: '#F7C948',
           accent: '#E8475F',
         },
-        // Autism palette (calming)
-        autism: {
-          bg: '#F0FAFB',
-          text: '#1E3A4C',
-          primary: '#2B8A9E',
-          secondary: '#5BBFA0',
-          accent: '#7EC8C8',
-          card: '#E6F7F7',
+        // Dysgraphia palette (writing-focused, green)
+        dysgraphia: {
+          bg: '#F0FFF4',
+          text: '#22543D',
+          primary: '#38A169',
+          secondary: '#68D391',
+          accent: '#48BB78',
+          card: '#C6F6D5',
         },
         // Dyscalculia palette
         dyscalculia: {
@@ -30,15 +30,7 @@ export default {
           accent: '#06B6D4',
           card: '#F3E8FF',
         },
-        // ADHD palette (vibrant)
-        adhd: {
-          bg: '#FFFBF0',
-          text: '#1A1A2E',
-          primary: '#FF6B00',
-          secondary: '#00C853',
-          accent: '#2979FF',
-          card: '#FFF3E0',
-        },
+
         // App-wide
         yub: {
           50: '#FFF8E1',

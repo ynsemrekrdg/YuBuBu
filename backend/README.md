@@ -1,6 +1,6 @@
 # 🎓 YuBuBu — Öğrenme Güçlüğü Çeken Çocuklar İçin Eğitim Platformu
 
-Disleksi, Otizm, Diskalkuli ve DEHB tanılı çocukların bireysel öğrenme ihtiyaçlarına özel olarak tasarlanmış, yapay zekâ destekli **cross-platform eğitim uygulaması** backend servisi.
+Disleksi, Disgrafi ve Diskalkuli özel öğrenme güçlüğü olan çocukların bireysel öğrenme ihtiyaçlarına özel olarak tasarlanmış, yapay zekâ destekli **cross-platform eğitim uygulaması** backend servisi.
 
 ## 📖 İçindekiler
 
@@ -313,7 +313,7 @@ pytest --cov=app --cov-report=html
 
 ---
 
-## 🎮 Seed Data — 20 Eğitim Bölümü
+## 🎮 Seed Data — 15 Eğitim Bölümü
 
 ### Disleksi (5 Bölüm)
 1. **Harfleri Tanıyalım** — Harf eşleştirme (OpenDyslexic font)
@@ -322,12 +322,12 @@ pytest --cov=app --cov-report=html
 4. **Hece Bulmaca** — Hece ayırma ve birleştirme
 5. **Cümle Kurma Şampiyonu** — Kelimelerden cümle oluşturma
 
-### Otizm (5 Bölüm)
-1. **Günlük Rutinlerim** — Görsel rutin takibi
-2. **Duygular Ne Söylüyor?** — Duygu tanıma
-3. **Adım Adım Talimatlar** — Aşamalı görev takibi
-4. **Görsel Program Oluştur** — Kendi programını yapma
-5. **Kalıp Tanıma** — Şekil ve renk kalıpları
+### Disgrafi (5 Bölüm)
+1. **Harfleri Tanıyalım** — Parmakla harf izleme
+2. **Çizgi Takibi** — İnce motor beceri geliştirme
+3. **Harf Yazma Sırası** — Doğru yazılış sırası öğrenme
+4. **Kelime Yazma** — Noktalı çizgi üzerinde yazma
+5. **Cümle Kopyalama** — Cümle bakarak kopyalama
 
 ### Diskalkuli (5 Bölüm)
 1. **Sayıları Tanıyalım** — Somut nesnelerle sayma
@@ -335,13 +335,6 @@ pytest --cov=app --cov-report=html
 3. **Toplama Arkadaşım** — Görsel toplama
 4. **Şekiller Dünyası** — Geometrik şekil tanıma
 5. **Grafik Okuma Macerası** — Çubuk grafik okuma
-
-### DEHB (5 Bölüm)
-1. **Süper Hızlı Eşleştirme!** — Hızlı kart eşleştirme
-2. **Puan Toplayıcı!** — Mini oyun + anında ödül
-3. **Odaklan ve Bul!** — Fark bulma oyunu
-4. **Zamana Karşı Yarış!** — Zamanlı mini görevler
-5. **Rozet Avcısı!** — Rozet toplama görevleri
 
 ---
 

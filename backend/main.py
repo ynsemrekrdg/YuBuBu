@@ -97,11 +97,10 @@ app = FastAPI(
 
 Öğrenme güçlüğü çeken çocuklar için kişiselleştirilmiş eğitim platformu.
 
-### Desteklenen Öğrenme Güçlükleri:
+### Desteklenen Özel Öğrenme Güçlükleri:
 - **Disleksi**: Kelime tanıma, harf eşleştirme, sesli geri bildirim
-- **Otizm**: Yapılandırılmış aktiviteler, görsel programlar
+- **Disgrafi**: Harf yazma, el yazısı pratiği, motor beceri egzersizleri
 - **Diskalkuli**: Görsel matematik, sayı çizgisi, somut örnekler
-- **DEHB**: Kısa aktiviteler, anında ödüller, gamification
 
 ### Özellikler:
 - 🤖 AI destekli kişiselleştirilmiş öğrenme

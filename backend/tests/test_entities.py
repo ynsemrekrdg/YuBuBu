@@ -50,20 +50,15 @@ class TestStudentProfile:
         assert prefs["audio_feedback"] is True
         assert "background_color" in prefs
 
-    def test_get_default_preferences_autism(self):
-        prefs = StudentProfile.get_default_preferences(LearningDifficulty.AUTISM)
-        assert prefs["predictable_layout"] is True
-        assert prefs["minimal_animations"] is True
+    def test_get_default_preferences_dysgraphia(self):
+        prefs = StudentProfile.get_default_preferences(LearningDifficulty.DYSGRAPHIA)
+        assert prefs["wide_line_spacing"] is True
+        assert prefs["stroke_guides"] is True
 
     def test_get_default_preferences_dyscalculia(self):
         prefs = StudentProfile.get_default_preferences(LearningDifficulty.DYSCALCULIA)
         assert prefs["visual_math_tools"] is True
         assert prefs["number_line_visible"] is True
-
-    def test_get_default_preferences_adhd(self):
-        prefs = StudentProfile.get_default_preferences(LearningDifficulty.ADHD)
-        assert prefs["short_activities"] is True
-        assert prefs["instant_rewards"] is True
 
 
 class TestChapter:
@@ -106,9 +101,8 @@ class TestProgress:
 class TestEnums:
     def test_learning_difficulties(self):
         assert LearningDifficulty.DYSLEXIA.value == "dyslexia"
-        assert LearningDifficulty.AUTISM.value == "autism"
+        assert LearningDifficulty.DYSGRAPHIA.value == "dysgraphia"
         assert LearningDifficulty.DYSCALCULIA.value == "dyscalculia"
-        assert LearningDifficulty.ADHD.value == "adhd"
 
     def test_user_roles(self):
         assert UserRole.STUDENT.value == "student"
@@ -120,4 +114,4 @@ class TestEnums:
         assert len(BadgeType) == 10
 
     def test_activity_types(self):
-        assert len(ActivityType) == 20
+        assert len(ActivityType) == 16

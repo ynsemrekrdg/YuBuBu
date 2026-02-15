@@ -15,9 +15,8 @@ const variantClasses: Record<string, string> = {
   ghost: 'bg-transparent hover:bg-gray-100 text-gray-700',
   danger: 'bg-red-500 hover:bg-red-600 text-white',
   dyslexia: 'bg-dyslexia-primary hover:bg-orange-600 text-white font-dyslexic shadow-md',
-  autism: 'bg-autism-primary hover:bg-teal-700 text-white font-calm shadow-md',
+  dysgraphia: 'bg-dysgraphia-primary hover:bg-green-700 text-white font-calm shadow-md',
   dyscalculia: 'bg-dyscalculia-primary hover:bg-violet-700 text-white shadow-md',
-  adhd: 'bg-adhd-primary hover:bg-orange-700 text-white font-fun shadow-md',
 };
 
 const sizeClasses: Record<string, string> = {

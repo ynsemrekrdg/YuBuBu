@@ -19,9 +19,8 @@ export function speak(text: string, rate = 0.9, lang = 'tr-TR') {
 export function getThemeClass(difficulty: LearningDifficulty): string {
   const map: Record<LearningDifficulty, string> = {
     dyslexia: 'theme-dyslexia',
-    autism: 'theme-autism',
+    dysgraphia: 'theme-dysgraphia',
     dyscalculia: 'theme-dyscalculia',
-    adhd: 'theme-adhd',
   };
   return map[difficulty] || '';
 }
@@ -32,9 +31,8 @@ export function getThemeClass(difficulty: LearningDifficulty): string {
 export function getFontSize(difficulty: LearningDifficulty): number {
   const sizes: Record<LearningDifficulty, number> = {
     dyslexia: 20,
-    autism: 16,
+    dysgraphia: 18,
     dyscalculia: 18,
-    adhd: 16,
   };
   return sizes[difficulty] || 16;
 }
@@ -43,8 +41,8 @@ export function getFontSize(difficulty: LearningDifficulty): number {
  * Get ARIA live region politeness for difficulty
  */
 export function getAriaLive(difficulty: LearningDifficulty): 'polite' | 'assertive' {
-  // ADHD and dyslexia need immediate feedback
-  return difficulty === 'adhd' || difficulty === 'dyslexia' ? 'assertive' : 'polite';
+  // Dyslexia needs immediate feedback
+  return difficulty === 'dyslexia' ? 'assertive' : 'polite';
 }
 
 /**

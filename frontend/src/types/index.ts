@@ -3,7 +3,7 @@
 // ─── Enums ──────────────────────────────────────────────────
 
 export type UserRole = 'student' | 'parent' | 'teacher' | 'admin';
-export type LearningDifficulty = 'dyslexia' | 'autism' | 'dyscalculia' | 'adhd';
+export type LearningDifficulty = 'dyslexia' | 'dysgraphia' | 'dyscalculia';
 export type DifficultyType = LearningDifficulty;
 export type ActivityType = 'letter_matching' | 'word_building' | 'number_line' | 'counting' | 'pattern_matching' | 'sequence_ordering' | 'quick_match' | 'focus_timer' | 'reading' | 'visual_schedule';
 
@@ -288,16 +288,16 @@ export const DIFFICULTY_THEMES: Record<LearningDifficulty, DifficultyTheme> = {
     label: 'Disleksi',
     emoji: '📖',
   },
-  autism: {
-    bg: 'bg-autism-bg',
-    text: 'text-autism-text',
-    primary: 'bg-autism-primary',
-    secondary: 'bg-autism-secondary',
-    accent: 'bg-autism-accent',
-    card: 'bg-autism-card',
+  dysgraphia: {
+    bg: 'bg-dysgraphia-bg',
+    text: 'text-dysgraphia-text',
+    primary: 'bg-dysgraphia-primary',
+    secondary: 'bg-dysgraphia-secondary',
+    accent: 'bg-dysgraphia-accent',
+    card: 'bg-dysgraphia-card',
     font: 'font-calm',
-    label: 'Otizm',
-    emoji: '🧩',
+    label: 'Disgrafi',
+    emoji: '✍️',
   },
   dyscalculia: {
     bg: 'bg-dyscalculia-bg',
@@ -309,16 +309,5 @@ export const DIFFICULTY_THEMES: Record<LearningDifficulty, DifficultyTheme> = {
     font: 'font-body',
     label: 'Diskalkuli',
     emoji: '🔢',
-  },
-  adhd: {
-    bg: 'bg-adhd-bg',
-    text: 'text-adhd-text',
-    primary: 'bg-adhd-primary',
-    secondary: 'bg-adhd-secondary',
-    accent: 'bg-adhd-accent',
-    card: 'bg-adhd-card',
-    font: 'font-fun',
-    label: 'DEHB',
-    emoji: '⚡',
   },
 };

@@ -9,12 +9,10 @@ import { useAuthStore } from '../store/useAuthStore';
 import ProgressBar from '../components/shared/ProgressBar';
 import WordMatchGame from '../components/dyslexia/WordMatchGame';
 import LetterTracingGame from '../components/dyslexia/LetterTracingGame';
-import SequenceGame from '../components/autism/SequenceGame';
-import PatternMatchGame from '../components/autism/PatternMatchGame';
+import LetterFormingGame from '../components/dysgraphia/LetterFormingGame';
+import HandwritingPracticeGame from '../components/dysgraphia/HandwritingPracticeGame';
 import NumberLineGame from '../components/dyscalculia/NumberLineGame';
 import CountingGame from '../components/dyscalculia/CountingGame';
-import QuickMatchGame from '../components/adhd/QuickMatchGame';
-import FocusTimerGame from '../components/adhd/FocusTimerGame';
 import type { DifficultyType } from '../types';
 import { getStars, getEncouragement } from '../utils/gamification';
 import { playSound } from '../utils/accessibility';
@@ -184,14 +182,13 @@ export default function ChapterPlay() {
   );
 }
 
-type GameType = 'wordMatch' | 'letterTracing' | 'sequence' | 'pattern' | 'numberLine' | 'counting' | 'quickMatch' | 'focusTimer';
+type GameType = 'wordMatch' | 'letterTracing' | 'letterForming' | 'handwriting' | 'numberLine' | 'counting';
 
 function getGamesForDifficulty(difficulty: DifficultyType): GameType[] {
   switch (difficulty) {
     case 'dyslexia': return ['wordMatch', 'letterTracing'];
-    case 'autism': return ['sequence', 'pattern'];
+    case 'dysgraphia': return ['letterForming', 'handwriting'];
     case 'dyscalculia': return ['numberLine', 'counting'];
-    case 'adhd': return ['quickMatch', 'focusTimer'];
   }
 }
 
@@ -200,11 +197,9 @@ function renderGame(game: GameType, difficulty: DifficultyType, onComplete: (sco
   switch (game) {
     case 'wordMatch': return <WordMatchGame {...props} />;
     case 'letterTracing': return <LetterTracingGame {...props} />;
-    case 'sequence': return <SequenceGame {...props} />;
-    case 'pattern': return <PatternMatchGame {...props} />;
+    case 'letterForming': return <LetterFormingGame {...props} />;
+    case 'handwriting': return <HandwritingPracticeGame {...props} />;
     case 'numberLine': return <NumberLineGame {...props} />;
     case 'counting': return <CountingGame {...props} />;
-    case 'quickMatch': return <QuickMatchGame {...props} />;
-    case 'focusTimer': return <FocusTimerGame {...props} />;
   }
 }

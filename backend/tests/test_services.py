@@ -246,9 +246,8 @@ class TestSeedData:
             difficulties[diff] = difficulties.get(diff, 0) + 1
 
         assert difficulties[LearningDifficulty.DYSLEXIA] == 5
-        assert difficulties[LearningDifficulty.AUTISM] == 5
+        assert difficulties[LearningDifficulty.DYSGRAPHIA] == 5
         assert difficulties[LearningDifficulty.DYSCALCULIA] == 5
-        assert difficulties[LearningDifficulty.ADHD] == 5
 
     def test_all_chapters_have_content_config(self):
         from app.seed_data import CHAPTERS
@@ -260,7 +259,7 @@ class TestSeedData:
 
     def test_seed_users_count(self):
         from app.seed_data import SEED_USERS
-        assert len(SEED_USERS) == 7  # admin, teacher, parent, 4 students
+        assert len(SEED_USERS) == 6  # admin, teacher, parent, 3 students
 
     def test_seed_users_all_roles(self):
         from app.seed_data import SEED_USERS
@@ -277,6 +276,5 @@ class TestSeedData:
             if "profile" in u:
                 difficulties.add(u["profile"]["learning_difficulty"])
         assert LearningDifficulty.DYSLEXIA in difficulties
-        assert LearningDifficulty.AUTISM in difficulties
+        assert LearningDifficulty.DYSGRAPHIA in difficulties
         assert LearningDifficulty.DYSCALCULIA in difficulties
-        assert LearningDifficulty.ADHD in difficulties

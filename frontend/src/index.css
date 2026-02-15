@@ -51,15 +51,16 @@
     @apply bg-[#FFF8E1] border-2 border-[#FF6B35] rounded-2xl shadow-lg;
   }
 
-  /* Autism */
-  .theme-autism {
+  /* Dysgraphia */
+  .theme-dysgraphia {
     font-family: 'Nunito', sans-serif;
-    background-color: #F0FAFB;
-    color: #1E3A4C;
+    background-color: #F0FFF4;
+    color: #22543D;
+    line-height: 2.0;
   }
 
-  .theme-autism .chapter-card {
-    @apply bg-[#E6F7F7] border-2 border-[#2B8A9E] rounded-xl shadow-md;
+  .theme-dysgraphia .chapter-card {
+    @apply bg-[#C6F6D5] border-2 border-[#38A169] rounded-xl shadow-md;
   }
 
   /* Dyscalculia */
@@ -73,16 +74,6 @@
     @apply bg-[#F3E8FF] border-2 border-[#8B5CF6] rounded-2xl shadow-lg;
   }
 
-  /* ADHD */
-  .theme-adhd {
-    font-family: 'Fredoka One', cursive;
-    background-color: #FFFBF0;
-    color: #1A1A2E;
-  }
-
-  .theme-adhd .chapter-card {
-    @apply bg-[#FFF3E0] border-2 border-[#FF6B00] rounded-2xl shadow-lg;
-  }
 
   /* Shared */
   .game-container {

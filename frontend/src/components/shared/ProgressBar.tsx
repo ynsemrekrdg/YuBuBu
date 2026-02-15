@@ -12,9 +12,8 @@ interface ProgressBarProps {
 
 const colorMap: Record<string, string> = {
   dyslexia: 'bg-dyslexia-primary',
-  autism: 'bg-autism-primary',
+  dysgraphia: 'bg-dysgraphia-primary',
   dyscalculia: 'bg-dyscalculia-primary',
-  adhd: 'bg-adhd-primary',
   default: 'bg-yub-500',
 };
 
