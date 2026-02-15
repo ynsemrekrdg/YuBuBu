@@ -39,6 +39,11 @@ class ActivityType(str, Enum):
     SHAPE_LEARNING = "shape_learning"
     CONCRETE_COUNTING = "concrete_counting"
     GRAPH_EXERCISE = "graph_exercise"
+    PLACE_VALUE = "place_value"
+    ADDITION_CRA = "addition_cra"
+    SUBTRACTION_CRA = "subtraction_cra"
+    WORD_PROBLEM = "word_problem"
+    NUMBER_COMPARISON = "number_comparison"
 
 
 class DifficultyLevel(int, Enum):

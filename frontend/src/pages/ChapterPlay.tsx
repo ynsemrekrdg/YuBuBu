@@ -13,7 +13,13 @@ import LetterFormingGame from '../components/dysgraphia/LetterFormingGame';
 import HandwritingPracticeGame from '../components/dysgraphia/HandwritingPracticeGame';
 import NumberLineGame from '../components/dyscalculia/NumberLineGame';
 import CountingGame from '../components/dyscalculia/CountingGame';
-import type { DifficultyType } from '../types';
+import ConcreteCountingGame from '../components/dyscalculia/ConcreteCountingGame';
+import NumberComparisonGame from '../components/dyscalculia/NumberComparisonGame';
+import PlaceValueBlocksGame from '../components/dyscalculia/PlaceValueBlocksGame';
+import AdditionCRAGame from '../components/dyscalculia/AdditionCRAGame';
+import SubtractionCRAGame from '../components/dyscalculia/SubtractionCRAGame';
+import WordProblemGame from '../components/dyscalculia/WordProblemGame';
+import type { DifficultyType, ContentConfig } from '../types';
 import { getStars, getEncouragement } from '../utils/gamification';
 import { playSound } from '../utils/accessibility';
 
@@ -32,7 +38,7 @@ export default function ChapterPlay() {
   const [hintText, setHintText] = useState('');
   const [showHint, setShowHint] = useState(false);
 
-  const games = getGamesForDifficulty(difficulty);
+  const games = getGamesForDifficulty(difficulty, chapter?.content_config);
   const totalGames = games.length;
   const gameProgress = totalGames > 0 ? Math.round(((gameIndex + (finished ? 1 : 0)) / totalGames) * 100) : 0;
   const avgScore = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
@@ -182,13 +188,23 @@ export default function ChapterPlay() {
   );
 }
 
-type GameType = 'wordMatch' | 'letterTracing' | 'letterForming' | 'handwriting' | 'numberLine' | 'counting';
+type GameType = 'wordMatch' | 'letterTracing' | 'letterForming' | 'handwriting' | 'numberLine' | 'counting' | 'concreteCount' | 'numberComparison' | 'placeValue' | 'additionCRA' | 'subtractionCRA' | 'wordProblem';
 
-function getGamesForDifficulty(difficulty: DifficultyType): GameType[] {
+function getGamesForDifficulty(difficulty: DifficultyType, contentConfig?: ContentConfig): GameType[] {
   switch (difficulty) {
     case 'dyslexia': return ['wordMatch', 'letterTracing'];
     case 'dysgraphia': return ['letterForming', 'handwriting'];
-    case 'dyscalculia': return ['numberLine', 'counting'];
+    case 'dyscalculia': {
+      // Use chapter-specific games from content_config if available
+      const configGames = contentConfig?.activity?.games as string[] | undefined;
+      if (configGames && configGames.length > 0) {
+        const validGames: GameType[] = configGames.filter(
+          (g): g is GameType => ['numberLine', 'counting', 'concreteCount', 'numberComparison', 'placeValue', 'additionCRA', 'subtractionCRA', 'wordProblem'].includes(g)
+        );
+        if (validGames.length > 0) return validGames;
+      }
+      return ['concreteCount', 'numberComparison'];
+    }
   }
 }
 
@@ -201,5 +217,11 @@ function renderGame(game: GameType, difficulty: DifficultyType, onComplete: (sco
     case 'handwriting': return <HandwritingPracticeGame {...props} />;
     case 'numberLine': return <NumberLineGame {...props} />;
     case 'counting': return <CountingGame {...props} />;
+    case 'concreteCount': return <ConcreteCountingGame {...props} />;
+    case 'numberComparison': return <NumberComparisonGame {...props} />;
+    case 'placeValue': return <PlaceValueBlocksGame {...props} />;
+    case 'additionCRA': return <AdditionCRAGame {...props} />;
+    case 'subtractionCRA': return <SubtractionCRAGame {...props} />;
+    case 'wordProblem': return <WordProblemGame {...props} />;
   }
 }

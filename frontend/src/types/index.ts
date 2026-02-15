@@ -116,6 +116,7 @@ export interface ActivityConfig {
   letters?: ActivityItem[];
   pairs_count?: number;
   time_limit?: number;
+  games?: string[];
   [key: string]: unknown;
 }
 
