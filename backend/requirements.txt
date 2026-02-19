@@ -22,6 +22,7 @@ email-validator==2.2.0
 
 # AI
 openai>=1.0.0
+httpx>=0.25.0
 
 # Cache
 redis==5.1.1
