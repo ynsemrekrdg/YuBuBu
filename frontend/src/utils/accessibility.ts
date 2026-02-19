@@ -1,9 +1,9 @@
 import type { LearningDifficulty } from '../types';
 
 /**
- * Speak text using the Web Speech API (browser-native, offline fallback)
+ * Internal: Browser Web Speech API (offline / fallback)
  */
-export function speak(text: string, rate = 0.9, lang = 'tr-TR') {
+export function browserSpeak(text: string, rate = 0.9, lang = 'tr-TR') {
   if (!('speechSynthesis' in window)) return;
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = lang;
@@ -27,8 +27,24 @@ export async function yubuSpeak(
     await ttsService.playAudioUrl(url);
   } catch {
     // Fallback: browser Web Speech API
-    speak(text);
+    browserSpeak(text);
   }
+}
+
+/**
+ * Speak text with YuBu voice (fire-and-forget sync wrapper).
+ * Maps speech rate → YuBu emotion automatically.
+ * All game components call this — routes to server TTS then browser fallback.
+ */
+export function speak(text: string, rate = 0.9, _lang = 'tr-TR') {
+  // Map rate to YuBu emotion
+  let emotion: 'happy' | 'encouraging' | 'gentle' | 'neutral' | 'excited' = 'neutral';
+  if (rate >= 1.0) emotion = 'happy';
+  else if (rate <= 0.75) emotion = 'gentle';
+  else if (rate <= 0.85) emotion = 'encouraging';
+
+  // Fire-and-forget: server TTS → browser fallback (handled inside yubuSpeak)
+  yubuSpeak(text, emotion).catch(() => {});
 }
 
 /**

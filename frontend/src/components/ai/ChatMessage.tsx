@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Bot, User, Volume2, Loader2 } from 'lucide-react';
 import { useState } from 'react';
-import { yubuSpeak, speak } from '../../utils/accessibility';
+import { yubuSpeak, browserSpeak } from '../../utils/accessibility';
 
 interface ChatMessageProps {
   text: string;
@@ -21,7 +21,7 @@ export default function ChatMessage({ text, sender, timestamp }: ChatMessageProp
       await yubuSpeak(text, 'neutral');
     } catch {
       // Son çare: tarayıcı sesi
-      speak(text);
+      browserSpeak(text);
     } finally {
       setSpeaking(false);
     }

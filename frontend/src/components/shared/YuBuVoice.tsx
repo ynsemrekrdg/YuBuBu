@@ -8,7 +8,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, VolumeX, Loader2 } from 'lucide-react';
 import { ttsService, type YuBuEmotion } from '../../services/tts.service';
-import { speak as browserSpeak } from '../../utils/accessibility';
+import { browserSpeak } from '../../utils/accessibility';
 
 interface YuBuVoiceProps {
   /** Seslendirilecek metin */
