@@ -41,7 +41,7 @@ class Settings(BaseSettings):
 
     # ElevenLabs TTS — YuBu Voice
     ELEVENLABS_API_KEY: str = ""
-    ELEVENLABS_VOICE_ID: str = "cgSgspJ2msm6clMCkdW9"  # Jessica — Playful, Bright, Warm
+    ELEVENLABS_VOICE_ID: str = "cgSgspJ2msm6clMCkdW9"  # Jessica — Playful, Bright, Warm, Cute
     ELEVENLABS_MODEL: str = "eleven_multilingual_v2"  # Çok dilli (Türkçe dahil)
 
     # CORS

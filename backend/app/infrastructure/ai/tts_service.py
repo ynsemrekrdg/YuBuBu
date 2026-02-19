@@ -16,7 +16,7 @@ from app.config import settings
 # ─── ElevenLabs Defaults ──────────────────────────────
 ELEVENLABS_API_URL = "https://api.elevenlabs.io/v1"
 ELEVENLABS_MODEL = "eleven_multilingual_v2"  # Türkçe dahil çok dilli
-YUBU_VOICE_ID = "cgSgspJ2msm6clMCkdW9"  # Jessica — Playful, Bright, Warm, Cute
+YUBU_VOICE_ID = "cgSgspJ2msm6clMCkdW9"  # Jessica — Playful, Bright, Warm, Cute  # Jessica — Playful, Bright, Warm, Cute
 
 # Emosyon bazlı ses ayarları (ElevenLabs voice_settings)
 # stability: 0 = çok değişken/enerjik, 1 = monoton/sakin
