@@ -1,7 +1,7 @@
 import type { LearningDifficulty } from '../types';
 
 /**
- * Speak text using the Web Speech API
+ * Speak text using the Web Speech API (browser-native, offline fallback)
  */
 export function speak(text: string, rate = 0.9, lang = 'tr-TR') {
   if (!('speechSynthesis' in window)) return;
@@ -11,6 +11,24 @@ export function speak(text: string, rate = 0.9, lang = 'tr-TR') {
   utterance.pitch = 1.1;
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(utterance);
+}
+
+/**
+ * Speak text using YuBu TTS (server-side, high quality).
+ * Falls back to browser speech if TTS fails.
+ */
+export async function yubuSpeak(
+  text: string,
+  emotion: 'happy' | 'encouraging' | 'gentle' | 'neutral' | 'excited' = 'neutral'
+): Promise<void> {
+  try {
+    const { ttsService } = await import('../services/tts.service');
+    const url = await ttsService.speak({ text, emotion });
+    await ttsService.playAudioUrl(url);
+  } catch {
+    // Fallback: browser Web Speech API
+    speak(text);
+  }
 }
 
 /**

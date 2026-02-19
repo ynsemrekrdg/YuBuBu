@@ -30,8 +30,8 @@ export default function ChatWindow({ roleContext = 'student', compact = false, c
     {
       id: 'welcome',
       text: chapterId
-        ? 'Merhaba! 🎯 Bu bölümle ilgili soruların varsa yardımcı olabilirim. Ne sormak istersin?'
-        : 'Merhaba! 🎓 Ben YuBuBu AI asistanıyım. Sana öğrenmende yardımcı olmak için buradayım. Ne sormak istersin?',
+        ? 'Merhaba! Ben YuBu! Bu bölümle ilgili soruların varsa yardımcı olabilirim. Ne sormak istersin?'
+        : 'Merhaba! Ben YuBu! Seninle öğrenmeye çok heyecanlıyım. Ne sormak istersin?',
       sender: 'ai',
       timestamp: new Date().toISOString(),
     },
@@ -88,7 +88,7 @@ export default function ChatWindow({ roleContext = 'student', compact = false, c
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="font-bold text-sm">YuBuBu AI Asistan</h2>
+          <h2 className="font-bold text-sm">YuBu Asistan</h2>
             <p className="text-xs text-white/80">Her zaman yardıma hazır!</p>
           </div>
         </div>

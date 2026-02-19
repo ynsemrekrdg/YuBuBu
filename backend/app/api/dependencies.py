@@ -16,6 +16,7 @@ from app.application.services.progress_service import ProgressService
 from app.application.services.student_service import StudentService
 from app.domain.entities.user import User
 from app.infrastructure.ai.ai_service import AIService
+from app.infrastructure.ai.tts_service import YuBuVoice
 from app.infrastructure.cache.redis_cache import redis_cache
 from app.infrastructure.database.ai_conversation_repository_impl import (
     SQLAlchemyAIConversationRepository,
@@ -140,6 +141,11 @@ def get_ai_service(
 ) -> AIService:
     """Inject AIService."""
     return AIService(conversation_repo, profile_repo, progress_repo, redis_cache)
+
+
+def get_tts_service() -> YuBuVoice:
+    """Inject YuBuVoice TTS service."""
+    return YuBuVoice()
 
 
 # ─── Auth Dependencies ──────────────────────────────────────

@@ -1,19 +1,24 @@
 """
 AI API routes.
-POST /api/ai/chat (personalized conversation)
-POST /api/ai/hint/{chapter_id}
-GET /api/ai/analysis/{student_id}
+POST /api/ai/chat                (personalized conversation)
+POST /api/ai/hint/{chapter_id}   (chapter hint)
+GET  /api/ai/analysis/{student_id} (performance analysis)
+POST /api/ai/tts/speak           (YuBu TTS - metin → ses)
+POST /api/ai/tts/scenario        (YuBu TTS - senaryo → ses)
+GET  /api/ai/tts/scenarios       (Mevcut senaryolar listesi)
 """
 
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import Response
 from loguru import logger
 
 from app.api.dependencies import (
     get_ai_service,
     get_chapter_service,
     get_current_active_user,
+    get_tts_service,
 )
 from app.application.dtos.ai_dtos import (
     AIAnalysisResponse,
@@ -21,10 +26,14 @@ from app.application.dtos.ai_dtos import (
     AIChatResponse,
     AIHintRequest,
     AIHintResponse,
+    TTSRequest,
+    TTSScenarioRequest,
+    YuBuScenariosResponse,
 )
 from app.application.services.chapter_service import ChapterService
 from app.domain.entities.user import User
 from app.infrastructure.ai.ai_service import AIService
+from app.infrastructure.ai.tts_service import YuBuVoice
 
 router = APIRouter(prefix="/api/ai", tags=["AI"])
 
@@ -158,3 +167,99 @@ async def get_analysis(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Analiz oluşturulurken bir hata oluştu",
         )
+
+
+# ═══════════════════════════════════════════════════════════════
+# YuBu TTS (Text-to-Speech) Endpoints
+# ═══════════════════════════════════════════════════════════════
+
+@router.post(
+    "/tts/speak",
+    summary="YuBu Sesli Konuşma",
+    description="Metni YuBu sesiyle seslendirme. Emosyon desteği ile MP3 döner.",
+    responses={200: {"content": {"audio/mpeg": {}}}},
+)
+async def tts_speak(
+    request: TTSRequest,
+    current_user: User = Depends(get_current_active_user),
+    tts_service: YuBuVoice = Depends(get_tts_service),
+):
+    """Convert text to YuBu voice (MP3 audio)."""
+    try:
+        audio_bytes = await tts_service.speak(
+            text=request.text,
+            emotion=request.emotion,
+            speed=request.speed,
+        )
+        return Response(
+            content=audio_bytes,
+            media_type="audio/mpeg",
+            headers={
+                "Content-Disposition": "inline; filename=yubu_speech.mp3",
+                "Cache-Control": "public, max-age=3600",
+            },
+        )
+    except Exception as e:
+        logger.error(f"TTS speak error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Ses oluşturulurken bir hata oluştu",
+        )
+
+
+@router.post(
+    "/tts/scenario",
+    summary="YuBu Senaryo Sesi",
+    description="Önceden tanımlı YuBu senaryolarını seslendirme.",
+    responses={200: {"content": {"audio/mpeg": {}}}},
+)
+async def tts_scenario(
+    request: TTSScenarioRequest,
+    current_user: User = Depends(get_current_active_user),
+    tts_service: YuBuVoice = Depends(get_tts_service),
+):
+    """Play a predefined YuBu scenario voice (MP3 audio)."""
+    try:
+        audio_bytes = await tts_service.speak_scenario(request.scenario)
+        if audio_bytes is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Senaryo bulunamadı: {request.scenario}",
+            )
+        return Response(
+            content=audio_bytes,
+            media_type="audio/mpeg",
+            headers={
+                "Content-Disposition": f"inline; filename=yubu_{request.scenario}.mp3",
+                "Cache-Control": "public, max-age=86400",
+            },
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"TTS scenario error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Senaryo sesi oluşturulurken bir hata oluştu",
+        )
+
+
+@router.get(
+    "/tts/scenarios",
+    response_model=YuBuScenariosResponse,
+    summary="YuBu Senaryoları",
+    description="Mevcut tüm YuBu ses senaryolarının listesi.",
+)
+async def list_tts_scenarios():
+    """List all available YuBu TTS scenarios."""
+    from app.infrastructure.ai.yubu_prompts import YUBU_SCENARIOS
+
+    scenarios = {
+        key: {
+            "text": val["text"],
+            "emotion": val["emotion"],
+            "description": val.get("description", ""),
+        }
+        for key, val in YUBU_SCENARIOS.items()
+    }
+    return YuBuScenariosResponse(scenarios=scenarios)

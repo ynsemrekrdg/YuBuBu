@@ -77,3 +77,42 @@ class AIAnalysisResponse(BaseModel):
     areas_for_improvement: List[str]
     recommendations: List[str]
     encouragement_message: str
+
+
+# ─── TTS (Text-to-Speech) DTOs ──────────────────────────────
+
+class TTSRequest(BaseModel):
+    """Request body for YuBu TTS."""
+    text: str = Field(..., min_length=1, max_length=1000, description="Seslendirilecek metin")
+    emotion: str = Field(
+        default="neutral",
+        description="Emosyon tipi: happy, encouraging, gentle, neutral, excited"
+    )
+    speed: Optional[float] = Field(
+        default=None, ge=0.25, le=4.0,
+        description="Manuel hız ayarı (0.25-4.0). None ise emosyona göre otomatik."
+    )
+
+    model_config = {"json_schema_extra": {
+        "example": {
+            "text": "Harika bir deneme! Tekrar deneyelim.",
+            "emotion": "encouraging",
+            "speed": None
+        }
+    }}
+
+
+class TTSScenarioRequest(BaseModel):
+    """Request body for predefined YuBu scenario TTS."""
+    scenario: str = Field(..., min_length=1, description="Senaryo anahtarı (welcome, correct_answer, vb.)")
+
+    model_config = {"json_schema_extra": {
+        "example": {
+            "scenario": "welcome"
+        }
+    }}
+
+
+class YuBuScenariosResponse(BaseModel):
+    """List of available YuBu scenarios."""
+    scenarios: Dict[str, Dict[str, str]]

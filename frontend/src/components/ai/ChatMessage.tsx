@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
-import { Bot, User, Volume2 } from 'lucide-react';
-import { speak } from '../../utils/accessibility';
+import { Bot, User, Volume2, Loader2 } from 'lucide-react';
+import { useState } from 'react';
+import { yubuSpeak, speak } from '../../utils/accessibility';
 
 interface ChatMessageProps {
   text: string;
@@ -10,6 +11,21 @@ interface ChatMessageProps {
 
 export default function ChatMessage({ text, sender, timestamp }: ChatMessageProps) {
   const isUser = sender === 'user';
+  const [speaking, setSpeaking] = useState(false);
+
+  const handleSpeak = async () => {
+    if (speaking) return;
+    setSpeaking(true);
+    try {
+      // AI mesajları için YuBu TTS kullan
+      await yubuSpeak(text, 'neutral');
+    } catch {
+      // Son çare: tarayıcı sesi
+      speak(text);
+    } finally {
+      setSpeaking(false);
+    }
+  };
 
   return (
     <motion.div
@@ -42,12 +58,17 @@ export default function ChatMessage({ text, sender, timestamp }: ChatMessageProp
           )}
           {!isUser && (
             <button
-              onClick={() => speak(text)}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-              aria-label="Mesajı sesli oku"
-              title="Sesli oku"
+              onClick={handleSpeak}
+              disabled={speaking}
+              className={`transition-colors ${speaking ? 'text-yub-500' : 'text-gray-400 hover:text-gray-600'} disabled:opacity-70`}
+              aria-label="YuBu sesiyle dinle"
+              title="YuBu sesiyle dinle"
             >
-              <Volume2 className="w-3.5 h-3.5" />
+              {speaking ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Volume2 className="w-3.5 h-3.5" />
+              )}
             </button>
           )}
         </div>

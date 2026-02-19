@@ -39,6 +39,11 @@ class Settings(BaseSettings):
     OPENAI_MODEL: str = "gpt-4o"
     OPENAI_MAX_TOKENS: int = 2048
 
+    # TTS (Text-to-Speech) — YuBu Voice
+    TTS_VOICE: str = "nova"  # OpenAI voices: alloy, echo, fable, onyx, nova, shimmer
+    TTS_MODEL: str = "tts-1"  # tts-1 (hızlı) veya tts-1-hd (kaliteli)
+    TTS_DEFAULT_SPEED: float = 0.95
+
     # CORS
     CORS_ORIGINS: str = "http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:19006,http://localhost:8081"
 

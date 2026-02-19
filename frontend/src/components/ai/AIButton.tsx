@@ -27,7 +27,7 @@ export default function AIButton({ chapterId }: AIButtonProps) {
             {/* Panel header with close */}
             <div className="flex items-center justify-between bg-gradient-to-r from-yub-500 to-yub-700 text-white px-4 py-2 rounded-t-2xl">
               <span className="text-sm font-bold flex items-center gap-2">
-                <MessageCircle className="w-4 h-4" /> AI Asistan
+                <MessageCircle className="w-4 h-4" /> YuBu Asistan
               </span>
               <button
                 onClick={() => setOpen(false)}
