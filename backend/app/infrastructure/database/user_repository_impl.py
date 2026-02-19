@@ -25,6 +25,7 @@ class SQLAlchemyUserRepository(UserRepository):
         return User(
             id=model.id,
             email=model.email,
+            username=model.username,
             name=model.name,
             hashed_password=model.hashed_password,
             role=model.role,
@@ -38,6 +39,7 @@ class SQLAlchemyUserRepository(UserRepository):
         return UserModel(
             id=entity.id,
             email=entity.email,
+            username=entity.username,
             name=entity.name,
             hashed_password=entity.hashed_password,
             role=entity.role,
@@ -63,8 +65,21 @@ class SQLAlchemyUserRepository(UserRepository):
 
     async def get_by_email(self, email: str) -> Optional[User]:
         """Get a user by their email address."""
+        if not email:
+            return None
         stmt = select(UserModel).where(
             UserModel.email == email, UserModel.is_active == True
+        )
+        result = await self._session.execute(stmt)
+        model = result.scalar_one_or_none()
+        return self._to_entity(model) if model else None
+
+    async def get_by_username(self, username: str) -> Optional[User]:
+        """Get a user by their username."""
+        if not username:
+            return None
+        stmt = select(UserModel).where(
+            UserModel.username == username, UserModel.is_active == True
         )
         result = await self._session.execute(stmt)
         model = result.scalar_one_or_none()

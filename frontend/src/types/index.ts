@@ -117,8 +117,24 @@ export interface WritingCoachResponse {
 // ─── Auth ───────────────────────────────────────────────────
 
 export interface LoginRequest {
-  email: string;
+  identifier: string;
   password: string;
+}
+
+export interface ParentRegisterRequest {
+  email: string;
+  name: string;
+  password: string;
+  phone?: string;
+}
+
+export interface StudentRegisterRequest {
+  name: string;
+  age: number;
+  grade?: number;
+  learning_difficulty: LearningDifficulty;
+  school_id?: string;
+  teacher_id?: string;
 }
 
 export interface RegisterRequest {
@@ -126,6 +142,8 @@ export interface RegisterRequest {
   name: string;
   password: string;
   role: UserRole;
+  learning_difficulty?: string;
+  age?: number;
 }
 
 export interface TokenResponse {
@@ -136,12 +154,58 @@ export interface TokenResponse {
   role: UserRole;
 }
 
+export interface ParentRegisterResponse extends TokenResponse {
+  name: string;
+}
+
+export interface StudentRegisterResponse {
+  student_id: string;
+  student_name: string;
+  username: string;
+  plain_password: string;
+  learning_difficulty: LearningDifficulty;
+  message: string;
+}
+
 export interface UserResponse {
   id: string;
-  email: string;
+  email?: string;
+  username?: string;
   name: string;
   role: UserRole;
   is_active: boolean;
+}
+
+// ─── School & Teacher ───────────────────────────────────────
+
+export interface School {
+  id: string;
+  name: string;
+  city: string;
+  district: string;
+}
+
+export interface TeacherInfo {
+  id: string;
+  name: string;
+  branch: string;
+}
+
+export interface ChildInfo {
+  id: string;
+  user_id: string;
+  name: string;
+  username?: string;
+  age: number;
+  grade?: number;
+  learning_difficulty: LearningDifficulty;
+  current_level: number;
+  total_score: number;
+  streak_days: number;
+}
+
+export interface ChildrenListResponse {
+  children: ChildInfo[];
 }
 
 // ─── Student ────────────────────────────────────────────────

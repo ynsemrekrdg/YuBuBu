@@ -29,6 +29,11 @@ class UserRepository(ABC):
         ...
 
     @abstractmethod
+    async def get_by_username(self, username: str) -> Optional[User]:
+        """Get a user by their username."""
+        ...
+
+    @abstractmethod
     async def update(self, user: User) -> User:
         """Update an existing user."""
         ...

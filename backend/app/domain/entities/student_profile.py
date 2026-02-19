@@ -24,6 +24,10 @@ class StudentProfile:
     preferences: Dict[str, Any] = field(default_factory=dict)
     streak_days: int = 0
     last_activity_date: Optional[datetime] = None
+    parent_id: Optional[UUID] = None
+    school_id: Optional[UUID] = None
+    teacher_id: Optional[UUID] = None
+    grade: Optional[int] = None
     created_at: datetime = field(default_factory=datetime.utcnow)
     updated_at: datetime = field(default_factory=datetime.utcnow)
 

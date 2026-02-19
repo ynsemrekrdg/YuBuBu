@@ -33,6 +33,10 @@ class SQLAlchemyStudentProfileRepository(StudentProfileRepository):
             preferences=model.preferences or {},
             streak_days=model.streak_days,
             last_activity_date=model.last_activity_date,
+            parent_id=model.parent_id,
+            school_id=model.school_id,
+            teacher_id=model.teacher_id,
+            grade=model.grade,
             created_at=model.created_at,
             updated_at=model.updated_at,
         )
@@ -49,6 +53,10 @@ class SQLAlchemyStudentProfileRepository(StudentProfileRepository):
             preferences=entity.preferences,
             streak_days=entity.streak_days,
             last_activity_date=entity.last_activity_date,
+            parent_id=entity.parent_id,
+            school_id=entity.school_id,
+            teacher_id=entity.teacher_id,
+            grade=entity.grade,
         )
 
     async def create(self, profile: StudentProfile) -> StudentProfile:
@@ -106,6 +114,17 @@ class SQLAlchemyStudentProfileRepository(StudentProfileRepository):
             .offset(skip)
             .limit(limit)
             .order_by(StudentProfileModel.total_score.desc())
+        )
+        result = await self._session.execute(stmt)
+        models = result.scalars().all()
+        return [self._to_entity(m) for m in models]
+
+    async def get_by_parent_id(self, parent_id: UUID) -> List[StudentProfile]:
+        """Get all student profiles linked to a parent."""
+        stmt = (
+            select(StudentProfileModel)
+            .where(StudentProfileModel.parent_id == parent_id)
+            .order_by(StudentProfileModel.created_at.desc())
         )
         result = await self._session.execute(stmt)
         models = result.scalars().all()

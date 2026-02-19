@@ -36,6 +36,12 @@ from app.infrastructure.database.student_profile_repository_impl import (
 from app.infrastructure.database.user_repository_impl import (
     SQLAlchemyUserRepository,
 )
+from app.infrastructure.database.school_repository_impl import (
+    SQLAlchemySchoolRepository,
+)
+from app.infrastructure.database.teacher_repository_impl import (
+    SQLAlchemyTeacherRepository,
+)
 
 # Security scheme
 security = HTTPBearer()
@@ -73,13 +79,24 @@ def get_badge_repo(session: AsyncSession = Depends(get_db)):
     return SQLAlchemyBadgeRepository(session)
 
 
+def get_school_repo(session: AsyncSession = Depends(get_db)):
+    """Inject SchoolRepository."""
+    return SQLAlchemySchoolRepository(session)
+
+
+def get_teacher_repo(session: AsyncSession = Depends(get_db)):
+    """Inject TeacherRepository."""
+    return SQLAlchemyTeacherRepository(session)
+
+
 # ─── Service Dependencies ───────────────────────────────────
 
 def get_auth_service(
     user_repo=Depends(get_user_repo),
+    profile_repo=Depends(get_student_profile_repo),
 ) -> AuthService:
-    """Inject AuthService."""
-    return AuthService(user_repo)
+    """Inject AuthService with user and profile repositories."""
+    return AuthService(user_repo, profile_repo)
 
 
 def get_student_service(

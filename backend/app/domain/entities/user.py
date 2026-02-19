@@ -16,7 +16,8 @@ class User:
     """Core user entity for the education platform."""
 
     id: UUID = field(default_factory=uuid4)
-    email: str = ""
+    email: Optional[str] = None
+    username: Optional[str] = None
     name: str = ""
     hashed_password: str = ""
     role: UserRole = UserRole.STUDENT

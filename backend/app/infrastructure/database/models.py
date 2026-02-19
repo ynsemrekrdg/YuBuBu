@@ -42,8 +42,11 @@ class UserModel(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         Uuid, primary_key=True, default=uuid.uuid4
     )
-    email: Mapped[str] = mapped_column(
-        String(255), unique=True, nullable=False, index=True
+    email: Mapped[Optional[str]] = mapped_column(
+        String(255), unique=True, nullable=True, index=True
+    )
+    username: Mapped[Optional[str]] = mapped_column(
+        String(100), unique=True, nullable=True, index=True
     )
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     hashed_password: Mapped[str] = mapped_column(String(512), nullable=False)
@@ -65,19 +68,22 @@ class UserModel(Base):
 
     # Relationships
     student_profile: Mapped[Optional["StudentProfileModel"]] = relationship(
-        "StudentProfileModel", back_populates="user", uselist=False, lazy="selectin"
+        "StudentProfileModel", back_populates="user", uselist=False, lazy="selectin",
+        foreign_keys="StudentProfileModel.user_id"
     )
     ai_conversations: Mapped[List["AIConversationModel"]] = relationship(
         "AIConversationModel", back_populates="user", lazy="dynamic"
     )
+    teacher_profile: Mapped[Optional["TeacherModel"]] = relationship(
+        "TeacherModel", back_populates="user", uselist=False, lazy="selectin"
+    )
 
     __table_args__ = (
-        Index("ix_users_email_active", "email", "is_active"),
         Index("ix_users_role", "role"),
     )
 
     def __repr__(self) -> str:
-        return f"<User(id={self.id}, email={self.email}, role={self.role})>"
+        return f"<User(id={self.id}, email={self.email}, username={self.username}, role={self.role})>"
 
 
 class StudentProfileModel(Base):
@@ -108,6 +114,16 @@ class StudentProfileModel(Base):
     last_activity_date: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
+    parent_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        Uuid, ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+    school_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        Uuid, ForeignKey("schools.id", ondelete="SET NULL"), nullable=True
+    )
+    teacher_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        Uuid, ForeignKey("teachers.id", ondelete="SET NULL"), nullable=True
+    )
+    grade: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
@@ -120,7 +136,8 @@ class StudentProfileModel(Base):
 
     # Relationships
     user: Mapped["UserModel"] = relationship(
-        "UserModel", back_populates="student_profile"
+        "UserModel", back_populates="student_profile",
+        foreign_keys=[user_id]
     )
     progress_records: Mapped[List["ProgressModel"]] = relationship(
         "ProgressModel", back_populates="student", lazy="dynamic"
@@ -128,11 +145,18 @@ class StudentProfileModel(Base):
     badges: Mapped[List["BadgeModel"]] = relationship(
         "BadgeModel", back_populates="student", lazy="selectin"
     )
+    school: Mapped[Optional["SchoolModel"]] = relationship(
+        "SchoolModel", back_populates="students", lazy="selectin"
+    )
+    teacher: Mapped[Optional["TeacherModel"]] = relationship(
+        "TeacherModel", back_populates="students", lazy="selectin"
+    )
 
     __table_args__ = (
         Index("ix_student_profiles_difficulty", "learning_difficulty"),
         Index("ix_student_profiles_user_id", "user_id"),
         Index("ix_student_profiles_level", "current_level"),
+        Index("ix_student_profiles_parent_id", "parent_id"),
     )
 
     def __repr__(self) -> str:
@@ -329,3 +353,98 @@ class BadgeModel(Base):
 
     def __repr__(self) -> str:
         return f"<Badge(student={self.student_id}, type={self.badge_type})>"
+
+
+class SchoolModel(Base):
+    """SQLAlchemy model for School entity."""
+
+    __tablename__ = "schools"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, primary_key=True, default=uuid.uuid4
+    )
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    city: Mapped[str] = mapped_column(String(100), nullable=False, default="")
+    district: Mapped[str] = mapped_column(String(100), nullable=False, default="")
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+    # Relationships
+    teachers: Mapped[List["TeacherModel"]] = relationship(
+        "TeacherModel", back_populates="school", lazy="selectin"
+    )
+    students: Mapped[List["StudentProfileModel"]] = relationship(
+        "StudentProfileModel", back_populates="school", lazy="dynamic"
+    )
+
+    def __repr__(self) -> str:
+        return f"<School(id={self.id}, name={self.name})>"
+
+
+class TeacherModel(Base):
+    """SQLAlchemy model for Teacher entity."""
+
+    __tablename__ = "teachers"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, primary_key=True, default=uuid.uuid4
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("users.id", ondelete="CASCADE"), unique=True, nullable=False
+    )
+    school_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("schools.id", ondelete="CASCADE"), nullable=False
+    )
+    branch: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+    # Relationships
+    user: Mapped["UserModel"] = relationship(
+        "UserModel", back_populates="teacher_profile"
+    )
+    school: Mapped["SchoolModel"] = relationship(
+        "SchoolModel", back_populates="teachers"
+    )
+    students: Mapped[List["StudentProfileModel"]] = relationship(
+        "StudentProfileModel", back_populates="teacher", lazy="dynamic"
+    )
+
+    __table_args__ = (
+        Index("ix_teachers_school_id", "school_id"),
+        Index("ix_teachers_user_id", "user_id"),
+    )
+
+    def __repr__(self) -> str:
+        return f"<Teacher(id={self.id}, user_id={self.user_id})>"
+
+
+class ParentStudentRelationModel(Base):
+    """SQLAlchemy model for parent-student relationship."""
+
+    __tablename__ = "parent_student_relations"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, primary_key=True, default=uuid.uuid4
+    )
+    parent_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
+    student_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+    __table_args__ = (
+        Index("ix_psr_parent_id", "parent_id"),
+        Index("ix_psr_student_id", "student_id"),
+        Index("ix_psr_unique", "parent_id", "student_id", unique=True),
+    )
+
+    def __repr__(self) -> str:
+        return f"<ParentStudentRelation(parent={self.parent_id}, student={self.student_id})>"

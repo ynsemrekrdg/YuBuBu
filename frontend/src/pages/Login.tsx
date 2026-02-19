@@ -1,25 +1,26 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, LogIn, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, LogIn, Sparkles, User, Mail } from 'lucide-react';
 import { authService } from '../services/auth.service';
 import { useAuthStore } from '../store/useAuthStore';
 
 export default function Login() {
   const navigate = useNavigate();
   const { setAuth } = useAuthStore();
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loginMode, setLoginMode] = useState<'student' | 'parent'>('student');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
     try {
-      const res = await authService.login({ email, password });
+      const res = await authService.login({ identifier, password });
       await setAuth(res);
       navigate('/');
     } catch (err: any) {
@@ -73,9 +74,37 @@ export default function Login() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="flex items-center gap-2 mb-6">
+          <div className="flex items-center gap-2 mb-4">
             <LogIn className="w-6 h-6 text-yub-primary" />
             <h2 className="text-2xl font-bold text-gray-800">Giriş Yap</h2>
+          </div>
+
+          {/* Mode Toggle */}
+          <div className="flex gap-2 mb-6">
+            <button
+              type="button"
+              onClick={() => { setLoginMode('student'); setIdentifier(''); }}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm transition-all ${
+                loginMode === 'student'
+                  ? 'bg-yub-primary text-white shadow-md'
+                  : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+              }`}
+            >
+              <User className="w-4 h-4" />
+              Öğrenci
+            </button>
+            <button
+              type="button"
+              onClick={() => { setLoginMode('parent'); setIdentifier(''); }}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm transition-all ${
+                loginMode === 'parent'
+                  ? 'bg-yub-secondary text-white shadow-md'
+                  : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+              }`}
+            >
+              <Mail className="w-4 h-4" />
+              Veli / Öğretmen
+            </button>
           </div>
 
           <AnimatePresence>
@@ -93,19 +122,24 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-gray-600 mb-1">
-                E-posta
+              <label htmlFor="identifier" className="block text-sm font-semibold text-gray-600 mb-1">
+                {loginMode === 'student' ? 'Kullanıcı Adı' : 'E-posta'}
               </label>
-              <input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-yub-primary focus:ring-2 focus:ring-yub-primary/20 outline-none transition-all text-lg"
-                placeholder="ornek@email.com"
-                autoComplete="email"
-              />
+              <div className="relative">
+                <input
+                  id="identifier"
+                  type={loginMode === 'parent' ? 'email' : 'text'}
+                  required
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-yub-primary focus:ring-2 focus:ring-yub-primary/20 outline-none transition-all text-lg"
+                  placeholder={loginMode === 'student' ? 'ali_yilmaz_1234' : 'ornek@email.com'}
+                  autoComplete={loginMode === 'parent' ? 'email' : 'username'}
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300">
+                  {loginMode === 'student' ? <User className="w-5 h-5" /> : <Mail className="w-5 h-5" />}
+                </div>
+              </div>
             </div>
 
             <div>
@@ -120,7 +154,7 @@ export default function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-yub-primary focus:ring-2 focus:ring-yub-primary/20 outline-none transition-all text-lg pr-12"
-                  placeholder="••••••••"
+                  placeholder={loginMode === 'student' ? 'ali1234' : '••••••••'}
                   autoComplete="current-password"
                 />
                 <button
@@ -160,21 +194,22 @@ export default function Login() {
             <p className="text-gray-500">
               Hesabın yok mu?{' '}
               <Link to="/register" className="text-yub-primary font-bold hover:underline">
-                Kayıt Ol
+                Veli Kaydı Oluştur
               </Link>
             </p>
           </div>
         </motion.div>
 
-        {/* Demo hint */}
-        <motion.p
+        {/* Demo hints */}
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
-          className="text-center text-white/60 text-sm mt-4"
+          className="text-center text-white/70 text-xs mt-4 space-y-1"
         >
-          Demo: ogrenci@test.com / sifre123
-        </motion.p>
+          <p>Demo Öğrenci: ali_yilmaz_1234 / ali1234</p>
+          <p>Demo Veli: selma.yilmaz@test.com / veli123</p>
+        </motion.div>
       </motion.div>
     </div>
   );
