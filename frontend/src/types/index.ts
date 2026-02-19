@@ -208,6 +208,10 @@ export interface ChildrenListResponse {
   children: ChildInfo[];
 }
 
+export interface TeacherStudentsListResponse {
+  students: ChildInfo[];
+}
+
 // ─── Student ────────────────────────────────────────────────
 
 export interface StudentProfile {

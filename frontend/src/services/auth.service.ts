@@ -11,6 +11,7 @@ import type {
   School,
   TeacherInfo,
   ChildrenListResponse,
+  TeacherStudentsListResponse,
 } from '../types';
 
 export const authService = {
@@ -51,6 +52,11 @@ export const authService = {
 
   async getMyChildren(): Promise<ChildrenListResponse> {
     const res = await api.get<ChildrenListResponse>('/api/auth/my-children');
+    return res.data;
+  },
+
+  async getMyStudents(): Promise<TeacherStudentsListResponse> {
+    const res = await api.get<TeacherStudentsListResponse>('/api/auth/my-students');
     return res.data;
   },
 };

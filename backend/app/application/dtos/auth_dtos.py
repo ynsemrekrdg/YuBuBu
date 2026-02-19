@@ -161,3 +161,8 @@ class ChildInfo(BaseModel):
     current_level: int
     total_score: int
     streak_days: int
+
+
+class TeacherStudentsListResponse(BaseModel):
+    """List of students for a teacher."""
+    students: List[ChildInfo]

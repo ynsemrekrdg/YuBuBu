@@ -6,6 +6,7 @@ POST /api/auth/register           - Legacy registration
 POST /api/auth/login              - Login (username or email)
 GET  /api/auth/me                 - Current user info
 GET  /api/auth/my-children        - Parent's children list
+GET  /api/auth/my-students        - Teacher's students list
 GET  /api/auth/schools            - Schools list
 GET  /api/auth/schools/{id}/teachers - Teachers by school
 """
@@ -35,6 +36,7 @@ from app.application.dtos.auth_dtos import (
     StudentRegisterRequest,
     StudentRegisterResponse,
     TeacherResponse,
+    TeacherStudentsListResponse,
     TokenResponse,
     UserResponse,
 )
@@ -283,6 +285,53 @@ async def get_my_children(
         ))
 
     return ChildrenListResponse(children=children)
+
+
+# ─── Teacher's Students ─────────────────────────────────────
+
+@router.get(
+    "/my-students",
+    response_model=TeacherStudentsListResponse,
+    summary="Öğretmenin öğrencileri",
+    description="Giriş yapan öğretmenin kendisine atanmış öğrencilerini listeler.",
+)
+async def get_my_students(
+    current_user: User = Depends(get_current_active_user),
+    profile_repo: StudentProfileRepository = Depends(get_student_profile_repo),
+    teacher_repo: TeacherRepository = Depends(get_teacher_repo),
+    auth_service: AuthService = Depends(get_auth_service),
+):
+    """Get students assigned to the current teacher."""
+    if current_user.role not in (UserRole.TEACHER, UserRole.ADMIN):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Sadece öğretmenler bu bilgiye erişebilir",
+        )
+
+    # Find teacher record by user_id
+    teacher = await teacher_repo.get_by_user_id(current_user.id)
+    if not teacher:
+        return TeacherStudentsListResponse(students=[])
+
+    # Get all student profiles assigned to this teacher
+    profiles = await profile_repo.get_by_teacher_id(teacher.id)
+    students = []
+    for p in profiles:
+        user = await auth_service._user_repo.get_by_id(p.user_id)
+        students.append(ChildInfo(
+            id=p.id,
+            user_id=p.user_id,
+            name=user.name if user else "",
+            username=user.username if user else None,
+            age=p.age,
+            grade=p.grade,
+            learning_difficulty=p.learning_difficulty,
+            current_level=p.current_level,
+            total_score=p.total_score,
+            streak_days=p.streak_days,
+        ))
+
+    return TeacherStudentsListResponse(students=students)
 
 
 # ─── Schools ────────────────────────────────────────────────

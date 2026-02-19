@@ -130,6 +130,17 @@ class SQLAlchemyStudentProfileRepository(StudentProfileRepository):
         models = result.scalars().all()
         return [self._to_entity(m) for m in models]
 
+    async def get_by_teacher_id(self, teacher_id: UUID) -> List[StudentProfile]:
+        """Get all student profiles assigned to a teacher."""
+        stmt = (
+            select(StudentProfileModel)
+            .where(StudentProfileModel.teacher_id == teacher_id)
+            .order_by(StudentProfileModel.created_at.desc())
+        )
+        result = await self._session.execute(stmt)
+        models = result.scalars().all()
+        return [self._to_entity(m) for m in models]
+
     async def update_score(self, profile_id: UUID, score_delta: int) -> StudentProfile:
         """Update the total score for a student profile."""
         stmt = select(StudentProfileModel).where(

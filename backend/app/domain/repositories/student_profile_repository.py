@@ -47,6 +47,11 @@ class StudentProfileRepository(ABC):
         ...
 
     @abstractmethod
+    async def get_by_teacher_id(self, teacher_id: UUID) -> List[StudentProfile]:
+        """Get all student profiles assigned to a teacher."""
+        ...
+
+    @abstractmethod
     async def update_score(self, profile_id: UUID, score_delta: int) -> StudentProfile:
         """Update the total score for a student profile."""
         ...
