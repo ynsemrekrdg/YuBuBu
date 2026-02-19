@@ -183,12 +183,16 @@ from app.api.routes.student_routes import router as student_router
 from app.api.routes.chapter_routes import router as chapter_router
 from app.api.routes.progress_routes import router as progress_router
 from app.api.routes.ai_routes import router as ai_router
+from app.api.routes.dysgraphia_routes import router as dysgraphia_router
+from app.api.routes.ai_activity_routes import router as ai_activity_router
 
 app.include_router(auth_router)
 app.include_router(student_router)
 app.include_router(chapter_router)
 app.include_router(progress_router)
 app.include_router(ai_router)
+app.include_router(dysgraphia_router)
+app.include_router(ai_activity_router)
 
 
 # ─── Health Check ────────────────────────────────────────────

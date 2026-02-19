@@ -51,6 +51,27 @@ class ActivityType(str, Enum):
     SIGHT_WORD = "sight_word"
     REPEATED_READING = "repeated_reading"
     COMPREHENSION = "comprehension"
+    # Dysgraphia - Evidence-Based Writing
+    GRIP_TRAINING = "grip_training"
+    SHAPE_TRACING = "shape_tracing"
+    EYE_HAND_COORDINATION = "eye_hand_coordination"
+    SPATIAL_AWARENESS = "spatial_awareness"
+    LETTER_FORMATION_SIMPLE = "letter_formation_simple"
+    LETTER_FORMATION_COMPLEX = "letter_formation_complex"
+    UPPERCASE_LETTERS = "uppercase_letters"
+    TURKISH_SPECIAL_CHARS = "turkish_special_chars"
+    PHONICS_SPELLING = "phonics_spelling"
+    SYLLABLE_SPELLING = "syllable_spelling"
+    SPELLING_RULES = "spelling_rules"
+    SIGHT_WORD_SPELLING = "sight_word_spelling"
+    SIMPLE_SENTENCES = "simple_sentences"
+    EXPANDED_SENTENCES = "expanded_sentences"
+    COMPOUND_SENTENCES = "compound_sentences"
+    PUNCTUATION_PRACTICE = "punctuation_practice"
+    WRITING_PLANNING = "writing_planning"
+    PARAGRAPH_WRITING = "paragraph_writing"
+    STORY_WRITING = "story_writing"
+    REVISION_EDITING = "revision_editing"
 
 
 class DifficultyLevel(int, Enum):

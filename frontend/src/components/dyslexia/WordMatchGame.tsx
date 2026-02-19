@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, CheckCircle, XCircle } from 'lucide-react';
 import { speak, playSound } from '../../utils/accessibility';
+import AIHintButton from '../shared/AIHintButton';
 import type { GameProps } from '../../types';
 
 interface WordPair {
@@ -39,6 +40,7 @@ export default function WordMatchGame({ onComplete }: GameProps) {
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
   const [gameOver, setGameOver] = useState(false);
   const [startTime] = useState(Date.now());
+  const [wrongAttempts, setWrongAttempts] = useState(0);
 
   const rounds = useState(() => {
     const shuffled = shuffle(WORD_PAIRS);
@@ -66,6 +68,7 @@ export default function WordMatchGame({ onComplete }: GameProps) {
         speak('Harika! Doğru!', 1.0);
       } else {
         setFeedback('wrong');
+        setWrongAttempts((w) => w + 1);
         playSound('error');
         speak('Tekrar dene!', 0.9);
       }
@@ -125,6 +128,21 @@ export default function WordMatchGame({ onComplete }: GameProps) {
       <p className="text-lg font-semibold text-center">
         Bu kelimeye uygun resmi seç! 👇
       </p>
+
+      {/* AI İpucu */}
+      <AIHintButton
+        chapterId="word-match"
+        activityType="word_recognition"
+        problem={{ question: `"${currentRound.word.word}" kelimesine uygun resmi seç`, correct_answer: currentRound.word.emoji }}
+        studentAnswer={feedback === 'wrong' ? 'yanlış seçim yapıldı' : ''}
+        attemptNumber={wrongAttempts}
+        chapterTitle="Kelime Eşleştirme"
+        learningDifficulty="dyslexia"
+        errorType={wrongAttempts > 1 ? 'visual_discrimination' : ''}
+        autoHintDelay={8000}
+        compact
+        variant="yellow"
+      />
 
       {/* Options */}
       <div className="grid grid-cols-2 gap-4 w-full max-w-md">

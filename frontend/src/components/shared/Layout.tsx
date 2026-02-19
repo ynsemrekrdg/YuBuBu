@@ -1,4 +1,4 @@
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useParams, matchPath } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Home, MessageCircle, User, LogOut, BookOpen } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -127,7 +127,7 @@ export default function Layout() {
 
       {/* Floating AI Button (student only) */}
       {user?.role === 'student' && location.pathname !== '/ai-chat' && (
-        <AIButton />
+        <AIButton chapterId={matchPath('/chapters/:id/play', location.pathname)?.params?.id} />
       )}
 
       {/* Bottom spacing for mobile nav */}

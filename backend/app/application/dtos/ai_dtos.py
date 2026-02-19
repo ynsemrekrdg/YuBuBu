@@ -20,11 +20,16 @@ class AIChatRequest(BaseModel):
         default="student",
         description="Role context: student, parent, or teacher"
     )
+    chapter_id: Optional[UUID] = Field(
+        default=None,
+        description="Current chapter ID for context-aware responses"
+    )
 
     model_config = {"json_schema_extra": {
         "example": {
             "message": "Bu kelimeyi okuyamıyorum, bana yardım eder misin?",
-            "role_context": "student"
+            "role_context": "student",
+            "chapter_id": None
         }
     }}
 

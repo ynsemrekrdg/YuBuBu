@@ -48,7 +48,11 @@ export function getAriaLive(difficulty: LearningDifficulty): 'polite' | 'asserti
 /**
  * Play a success or error sound effect  
  */
-export function playSound(type: 'success' | 'error' | 'click' | 'badge') {
+export function playSound(type: 'success' | 'error' | 'click' | 'badge' | 'correct' | 'wrong' | 'complete') {
+  // Map aliases to base sound types
+  const aliasMap: Record<string, string> = { correct: 'success', wrong: 'error', complete: 'badge' };
+  const resolvedType = aliasMap[type] || type;
+
   // Use AudioContext for simple tones
   try {
     const ctx = new AudioContext();
@@ -64,7 +68,7 @@ export function playSound(type: 'success' | 'error' | 'click' | 'badge') {
       badge: { freq: 659, dur: 0.15, type: 'triangle' },
     };
 
-    const s = sounds[type];
+    const s = sounds[resolvedType];
     osc.frequency.value = s.freq;
     osc.type = s.type;
     gain.gain.setValueAtTime(0.15, ctx.currentTime);
@@ -73,7 +77,7 @@ export function playSound(type: 'success' | 'error' | 'click' | 'badge') {
     osc.stop(ctx.currentTime + s.dur);
 
     // Play second note for badge/success
-    if (type === 'badge' || type === 'success') {
+    if (resolvedType === 'badge' || resolvedType === 'success') {
       const osc2 = ctx.createOscillator();
       const gain2 = ctx.createGain();
       osc2.connect(gain2);

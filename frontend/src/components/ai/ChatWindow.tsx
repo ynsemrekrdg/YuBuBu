@@ -6,6 +6,10 @@ import type { ChatMessage as ChatMsg } from '../../types';
 
 interface ChatWindowProps {
   roleContext?: string;
+  /** Compact mode for floating panel */
+  compact?: boolean;
+  /** Current chapter ID for context-aware responses */
+  chapterId?: string;
 }
 
 const quickQuestions = [
@@ -15,11 +19,19 @@ const quickQuestions = [
   'Aferin mi diyorsun? 😊',
 ];
 
-export default function ChatWindow({ roleContext = 'student' }: ChatWindowProps) {
+const chapterQuickQuestions = [
+  'Bu bölümde ne yapmam gerekiyor?',
+  'Zorlanıyorum, yardım eder misin?',
+  'Bir ipucu verir misin?',
+];
+
+export default function ChatWindow({ roleContext = 'student', compact = false, chapterId }: ChatWindowProps) {
   const [messages, setMessages] = useState<ChatMsg[]>([
     {
       id: 'welcome',
-      text: 'Merhaba! 🎓 Ben YuBuBu AI asistanıyım. Sana öğrenmende yardımcı olmak için buradayım. Ne sormak istersin?',
+      text: chapterId
+        ? 'Merhaba! 🎯 Bu bölümle ilgili soruların varsa yardımcı olabilirim. Ne sormak istersin?'
+        : 'Merhaba! 🎓 Ben YuBuBu AI asistanıyım. Sana öğrenmende yardımcı olmak için buradayım. Ne sormak istersin?',
       sender: 'ai',
       timestamp: new Date().toISOString(),
     },
@@ -48,7 +60,7 @@ export default function ChatWindow({ roleContext = 'student' }: ChatWindowProps)
     inputRef.current?.focus();
 
     try {
-      const res = await chatMutation.mutateAsync({ message: msg, role_context: roleContext });
+      const res = await chatMutation.mutateAsync({ message: msg, role_context: roleContext, chapter_id: chapterId });
       const aiMsg: ChatMsg = {
         id: res.id,
         text: res.response,
@@ -68,17 +80,19 @@ export default function ChatWindow({ roleContext = 'student' }: ChatWindowProps)
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-12rem)] md:h-[calc(100vh-10rem)] bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-yub-500 to-yub-700 text-white px-4 py-3 flex items-center gap-3">
-        <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-          <Sparkles className="w-5 h-5" />
+    <div className={`flex flex-col ${compact ? 'h-full' : 'h-[calc(100vh-12rem)] md:h-[calc(100vh-10rem)]'} bg-gray-50 ${compact ? '' : 'rounded-2xl border border-gray-200'} overflow-hidden`}>
+      {/* Header — hide in compact mode (parent provides it) */}
+      {!compact && (
+        <div className="bg-gradient-to-r from-yub-500 to-yub-700 text-white px-4 py-3 flex items-center gap-3">
+          <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div>
+            <h2 className="font-bold text-sm">YuBuBu AI Asistan</h2>
+            <p className="text-xs text-white/80">Her zaman yardıma hazır!</p>
+          </div>
         </div>
-        <div>
-          <h2 className="font-bold text-sm">YuBuBu AI Asistan</h2>
-          <p className="text-xs text-white/80">Her zaman yardıma hazır!</p>
-        </div>
-      </div>
+      )}
 
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-1">
@@ -94,13 +108,18 @@ export default function ChatWindow({ roleContext = 'student' }: ChatWindowProps)
       </div>
 
       {/* Quick Questions */}
-      <div className="px-4 pb-2 flex gap-2 overflow-x-auto scrollbar-none">
-        {quickQuestions.map((q) => (
+      <div className={`px-4 pb-2 flex gap-2 overflow-x-auto scrollbar-none ${compact ? 'flex-wrap' : ''}`}>
+        {(compact
+          ? (chapterId ? chapterQuickQuestions : quickQuestions.slice(0, 3))
+          : (chapterId ? chapterQuickQuestions : quickQuestions)
+        ).map((q) => (
           <button
             key={q}
             onClick={() => handleSend(q)}
             disabled={chatMutation.isPending}
-            className="shrink-0 px-3 py-1.5 bg-white border border-gray-200 rounded-full text-xs text-gray-600 hover:bg-yub-50 hover:border-yub-300 transition-colors disabled:opacity-50"
+            className={`shrink-0 bg-white border border-gray-200 rounded-full text-gray-600 hover:bg-yub-50 hover:border-yub-300 transition-colors disabled:opacity-50 ${
+              compact ? 'px-2 py-1 text-[10px]' : 'px-3 py-1.5 text-xs'
+            }`}
           >
             {q}
           </button>

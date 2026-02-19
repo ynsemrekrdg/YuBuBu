@@ -33,19 +33,34 @@ router = APIRouter(prefix="/api/ai", tags=["AI"])
     "/chat",
     response_model=AIChatResponse,
     summary="AI Sohbet",
-    description="Kişiselleştirilmiş AI sohbet. Öğrenme güçlüğüne göre yanıt verir.",
+    description="Kişiselleştirilmiş AI sohbet. Öğrenme güçlüğüne ve bölüm bağlamına göre yanıt verir.",
 )
 async def ai_chat(
     request: AIChatRequest,
     current_user: User = Depends(get_current_active_user),
     ai_service: AIService = Depends(get_ai_service),
+    chapter_service: ChapterService = Depends(get_chapter_service),
 ):
     """Send a message to AI and get a personalized response."""
     try:
+        # If chapter_id provided, fetch chapter for context
+        chapter_context = None
+        if request.chapter_id:
+            chapter = await chapter_service.get_chapter(request.chapter_id)
+            if chapter:
+                chapter_context = {
+                    "title": chapter.title,
+                    "activity_type": chapter.activity_type.value if hasattr(chapter.activity_type, 'value') else str(chapter.activity_type),
+                    "chapter_number": chapter.chapter_number,
+                    "difficulty_type": chapter.difficulty_type.value if hasattr(chapter.difficulty_type, 'value') else str(chapter.difficulty_type),
+                    "description": chapter.description or "",
+                }
+
         conversation = await ai_service.chat(
             user_id=current_user.id,
             message=request.message,
             role_context=request.role_context,
+            chapter_context=chapter_context,
         )
         return AIChatResponse(
             id=conversation.id,

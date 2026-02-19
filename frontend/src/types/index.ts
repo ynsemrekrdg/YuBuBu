@@ -7,6 +7,113 @@ export type LearningDifficulty = 'dyslexia' | 'dysgraphia' | 'dyscalculia';
 export type DifficultyType = LearningDifficulty;
 export type ActivityType = 'letter_matching' | 'word_building' | 'number_line' | 'counting' | 'pattern_matching' | 'sequence_ordering' | 'quick_match' | 'focus_timer' | 'reading' | 'visual_schedule';
 
+// ─── Dysgraphia Section Types ───────────────────────────────
+
+export type DysgraphiaSection = 'pre_writing' | 'letter_formation' | 'spelling' | 'sentences' | 'composition';
+
+export interface DysgraphiaSectionMeta {
+  key: DysgraphiaSection;
+  title: string;
+  color: string;
+  emoji: string;
+  chapterRange: [number, number]; // start, end chapter numbers
+}
+
+export const DYSGRAPHIA_SECTIONS: DysgraphiaSectionMeta[] = [
+  { key: 'pre_writing', title: 'Ön-Yazma Becerileri', color: '#10B981', emoji: '✋', chapterRange: [1, 4] },
+  { key: 'letter_formation', title: 'Harf Oluşturma', color: '#3B82F6', emoji: '✏️', chapterRange: [5, 8] },
+  { key: 'spelling', title: 'Yazım Becerileri', color: '#8B5CF6', emoji: '🔤', chapterRange: [9, 12] },
+  { key: 'sentences', title: 'Cümle Yazma', color: '#F59E0B', emoji: '📝', chapterRange: [13, 16] },
+  { key: 'composition', title: 'Kompozisyon', color: '#EF4444', emoji: '📖', chapterRange: [17, 20] },
+];
+
+// ─── Dysgraphia AI Request/Response Types ───────────────────
+
+export interface SentenceCheckRequest {
+  sentence: string;
+  student_age?: number;
+  context?: string;
+}
+
+export interface SentenceCheckResponse {
+  original: string;
+  corrected: string;
+  is_correct: boolean;
+  errors: SentenceError[];
+  encouragement: string;
+  score: number;
+}
+
+export interface SentenceError {
+  type: string;
+  position: number;
+  original: string;
+  correction: string;
+  explanation: string;
+}
+
+export interface SpellingHelpRequest {
+  word: string;
+  context?: string;
+}
+
+export interface SpellingHelpResponse {
+  word: string;
+  is_correct: boolean;
+  correct_spelling: string;
+  syllables: string[];
+  memory_tip: string;
+  similar_words: string[];
+  practice_sentence: string;
+}
+
+export interface StoryIdeasRequest {
+  theme?: string;
+  student_age?: number;
+  difficulty_level?: number;
+}
+
+export interface StoryIdeasResponse {
+  ideas: StoryIdea[];
+  writing_tips: string[];
+}
+
+export interface StoryIdea {
+  title: string;
+  starter: string;
+  characters: string[];
+  setting: string;
+  conflict: string;
+}
+
+export interface CompositionFeedbackRequest {
+  text: string;
+  writing_type?: string;
+  student_age?: number;
+}
+
+export interface CompositionFeedbackResponse {
+  overall_score: number;
+  feedback: string;
+  strengths: string[];
+  improvements: string[];
+  suggestions: string[];
+  encouragement: string;
+}
+
+export interface WritingCoachRequest {
+  current_text: string;
+  writing_stage: string;
+  help_type: string;
+}
+
+export interface WritingCoachResponse {
+  advice: string;
+  examples: string[];
+  next_steps: string[];
+  encouragement: string;
+}
+
 // ─── Auth ───────────────────────────────────────────────────
 
 export interface LoginRequest {
@@ -196,6 +303,7 @@ export interface AnalyticsResponse {
 export interface AIChatRequest {
   message: string;
   role_context?: string;
+  chapter_id?: string;
 }
 
 export interface AIChatResponse {

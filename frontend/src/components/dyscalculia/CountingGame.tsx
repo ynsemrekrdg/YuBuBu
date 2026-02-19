@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { playSound } from '../../utils/accessibility';
+import AIHintButton from '../shared/AIHintButton';
 import type { GameProps } from '../../types';
 
 interface CountRound {
@@ -23,6 +24,7 @@ export default function CountingGame({ onComplete }: GameProps) {
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
   const [gameOver, setGameOver] = useState(false);
   const [startTime] = useState(Date.now());
+  const [wrongAttempts, setWrongAttempts] = useState(0);
 
   const current = ROUNDS[roundIdx];
 
@@ -46,6 +48,7 @@ export default function CountingGame({ onComplete }: GameProps) {
       }, 1200);
     } else {
       setFeedback('wrong');
+      setWrongAttempts((w) => w + 1);
       playSound('error');
       setTimeout(() => setFeedback(null), 800);
     }
@@ -91,6 +94,21 @@ export default function CountingGame({ onComplete }: GameProps) {
           ))}
         </div>
       </motion.div>
+
+      {/* AI İpucu */}
+      <AIHintButton
+        chapterId="counting-basics"
+        activityType="counting"
+        problem={{ question: `Kaç tane ${current.emoji} var?`, correct_answer: String(current.count) }}
+        studentAnswer={feedback === 'wrong' ? 'yanlış cevap verildi' : ''}
+        attemptNumber={wrongAttempts}
+        chapterTitle="Sayma Oyunu"
+        learningDifficulty="dyscalculia"
+        errorType={wrongAttempts > 1 ? 'number_sense' : ''}
+        autoHintDelay={10000}
+        compact
+        variant="green"
+      />
 
       {/* Answer Options */}
       <div className="flex gap-3">

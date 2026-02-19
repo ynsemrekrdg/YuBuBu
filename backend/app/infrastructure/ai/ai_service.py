@@ -45,6 +45,7 @@ class AIService:
         user_id: UUID,
         message: str,
         role_context: str = "student",
+        chapter_context: Optional[Dict[str, Any]] = None,
     ) -> AIConversation:
         """
         Send a message to ChatGPT and get a personalized response.
@@ -68,6 +69,20 @@ MEVCUT ÖĞRENCİ DURUMU:
 - Seviye: {profile.current_level}
 - Toplam puan: {profile.total_score}
 - Seri gün: {profile.streak_days}
+"""
+
+        # Inject chapter context if available
+        if chapter_context:
+            system_prompt += f"""
+ŞU AN OYNANAN BÖLÜM:
+- Bölüm Başlığı: {chapter_context.get('title', 'Bilinmiyor')}
+- Aktivite Tipi: {chapter_context.get('activity_type', '')}
+- Bölüm No: {chapter_context.get('chapter_number', '')}
+- Zorluk Türü: {chapter_context.get('difficulty_type', '')}
+- Açıklama: {chapter_context.get('description', '')}
+
+ÖĞrenci şu anda bu bölümü oynuyor. Soruları bu bölümle ilgili olabilir.
+Cevaplarını bu bölümün konusuyla ilişkilendir ve yardımcı ol.
 """
 
         # Get recent conversation history for context

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Lightbulb, CheckCircle, Star, Home, RotateCcw } from 'lucide-react';
@@ -7,6 +7,7 @@ import { useCompleteChapter } from '../hooks/useProgress';
 import { useAIHint } from '../hooks/useAI';
 import { useAuthStore } from '../store/useAuthStore';
 import ProgressBar from '../components/shared/ProgressBar';
+import AIFeedbackPanel from '../components/shared/AIFeedbackPanel';
 import WordMatchGame from '../components/dyslexia/WordMatchGame';
 import LetterTracingGame from '../components/dyslexia/LetterTracingGame';
 import RhymeMatchGame from '../components/dyslexia/RhymeMatchGame';
@@ -17,6 +18,26 @@ import RepeatedReadingGame from '../components/dyslexia/RepeatedReadingGame';
 import ComprehensionGame from '../components/dyslexia/ComprehensionGame';
 import LetterFormingGame from '../components/dysgraphia/LetterFormingGame';
 import HandwritingPracticeGame from '../components/dysgraphia/HandwritingPracticeGame';
+import GripTrainingGame from '../components/dysgraphia/GripTrainingGame';
+import ShapeTracingGame from '../components/dysgraphia/ShapeTracingGame';
+import EyeHandCoordinationGame from '../components/dysgraphia/EyeHandCoordinationGame';
+import SpatialAwarenessGame from '../components/dysgraphia/SpatialAwarenessGame';
+import SimpleLetterFormationGame from '../components/dysgraphia/SimpleLetterFormationGame';
+import CurvedLetterFormationGame from '../components/dysgraphia/CurvedLetterFormationGame';
+import UppercaseMatchingGame from '../components/dysgraphia/UppercaseMatchingGame';
+import TurkishSpecialCharsGame from '../components/dysgraphia/TurkishSpecialCharsGame';
+import PhonicsSpellingGame from '../components/dysgraphia/PhonicsSpellingGame';
+import SyllableSpellingGame from '../components/dysgraphia/SyllableSpellingGame';
+import SpellingRulesGame from '../components/dysgraphia/SpellingRulesGame';
+import SightWordSpellingGame from '../components/dysgraphia/SightWordSpellingGame';
+import SimpleSentencesGame from '../components/dysgraphia/SimpleSentencesGame';
+import ExpandedSentencesGame from '../components/dysgraphia/ExpandedSentencesGame';
+import CompoundSentencesGame from '../components/dysgraphia/CompoundSentencesGame';
+import PunctuationPracticeGame from '../components/dysgraphia/PunctuationPracticeGame';
+import WritingPlanningGame from '../components/dysgraphia/WritingPlanningGame';
+import ParagraphWritingGame from '../components/dysgraphia/ParagraphWritingGame';
+import StoryWritingGame from '../components/dysgraphia/StoryWritingGame';
+import RevisionEditingGame from '../components/dysgraphia/RevisionEditingGame';
 import NumberLineGame from '../components/dyscalculia/NumberLineGame';
 import CountingGame from '../components/dyscalculia/CountingGame';
 import ConcreteCountingGame from '../components/dyscalculia/ConcreteCountingGame';
@@ -43,6 +64,8 @@ export default function ChapterPlay() {
   const [finished, setFinished] = useState(false);
   const [hintText, setHintText] = useState('');
   const [showHint, setShowHint] = useState(false);
+  const sessionStartRef = useRef(Date.now());
+  const hintsUsedRef = useRef(0);
 
   const games = getGamesForDifficulty(difficulty, chapter?.content_config);
   const totalGames = games.length;
@@ -59,7 +82,8 @@ export default function ChapterPlay() {
       playSound('success');
       if (id && studentProfile?.id) {
         const finalScore = Math.round(([...scores, score].reduce((a, b) => a + b, 0)) / ([...scores, score].length));
-        completeMutation.mutate({ chapter_id: id, student_id: studentProfile.id, score: finalScore, time_spent_seconds: 0 });
+        const elapsed = Math.round((Date.now() - sessionStartRef.current) / 1000);
+        completeMutation.mutate({ chapter_id: id, student_id: studentProfile.id, score: finalScore, time_spent_seconds: elapsed });
       }
     }
   }, [gameIndex, totalGames, id, scores, completeMutation, studentProfile]);
@@ -70,6 +94,7 @@ export default function ChapterPlay() {
       const res = await hintMutation.mutateAsync(1);
       setHintText(res.hint);
       setShowHint(true);
+      hintsUsedRef.current += 1;
     } catch {
       setHintText('Bir ipucu bulunamadı, tekrar dene!');
       setShowHint(true);
@@ -164,6 +189,22 @@ export default function ChapterPlay() {
               <p className="text-3xl font-bold text-gray-800 mb-6">{avgScore} Puan</p>
               <p className="text-gray-500 mb-8">{getEncouragement(avgScore)}</p>
 
+              {/* AI Performans Analizi — Katman 2 */}
+              {id && chapter && (
+                <div className="mb-8 text-left max-w-md mx-auto">
+                  <AIFeedbackPanel
+                    chapterId={id}
+                    chapterTitle={chapter.title}
+                    activityType={chapter.activity_type}
+                    scores={scores}
+                    timeSpent={Math.round((Date.now() - sessionStartRef.current) / 1000)}
+                    hintsUsed={hintsUsedRef.current}
+                    learningDifficulty={difficulty}
+                    autoAnalyze
+                  />
+                </div>
+              )}
+
               <div className="flex gap-3 justify-center">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -180,6 +221,8 @@ export default function ChapterPlay() {
                     setGameIndex(0);
                     setScores([]);
                     setFinished(false);
+                    sessionStartRef.current = Date.now();
+                    hintsUsedRef.current = 0;
                   }}
                   className="flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-bold"
                 >
@@ -194,7 +237,7 @@ export default function ChapterPlay() {
   );
 }
 
-type GameType = 'wordMatch' | 'letterTracing' | 'rhymeMatch' | 'syllableSegment' | 'letterSound' | 'sightWordFlashcard' | 'repeatedReading' | 'comprehension' | 'letterForming' | 'handwriting' | 'numberLine' | 'counting' | 'concreteCount' | 'numberComparison' | 'placeValue' | 'additionCRA' | 'subtractionCRA' | 'wordProblem';
+type GameType = 'wordMatch' | 'letterTracing' | 'rhymeMatch' | 'syllableSegment' | 'letterSound' | 'sightWordFlashcard' | 'repeatedReading' | 'comprehension' | 'letterForming' | 'handwriting' | 'gripTraining' | 'shapeTracing' | 'eyeHandCoordination' | 'spatialAwareness' | 'simpleLetterFormation' | 'curvedLetterFormation' | 'uppercaseMatching' | 'turkishSpecialChars' | 'phonicsSpelling' | 'syllableSpelling' | 'spellingRules' | 'sightWordSpelling' | 'simpleSentences' | 'expandedSentences' | 'compoundSentences' | 'punctuationPractice' | 'writingPlanning' | 'paragraphWriting' | 'storyWriting' | 'revisionEditing' | 'numberLine' | 'counting' | 'concreteCount' | 'numberComparison' | 'placeValue' | 'additionCRA' | 'subtractionCRA' | 'wordProblem';
 
 const DYSLEXIA_VALID_GAMES: GameType[] = ['wordMatch', 'letterTracing', 'rhymeMatch', 'syllableSegment', 'letterSound', 'sightWordFlashcard', 'repeatedReading', 'comprehension'];
 
@@ -211,7 +254,39 @@ function getGamesForDifficulty(difficulty: DifficultyType, contentConfig?: Conte
       }
       return ['wordMatch', 'letterTracing'];
     }
-    case 'dysgraphia': return ['letterForming', 'handwriting'];
+    case 'dysgraphia': {
+      // Map content_config activity type to game component
+      const actType = contentConfig?.activity?.type as string | undefined;
+      const subType = contentConfig?.activity?.sub_type as string | undefined;
+      const ACTIVITY_TYPE_MAP: Record<string, GameType> = {
+        grip_training: 'gripTraining',
+        shape_tracing: 'shapeTracing',
+        eye_hand_coordination: 'eyeHandCoordination',
+        spatial_awareness: 'spatialAwareness',
+        uppercase_lowercase_matching: 'uppercaseMatching',
+        turkish_special_chars: 'turkishSpecialChars',
+        phonics_spelling: 'phonicsSpelling',
+        syllable_spelling: 'syllableSpelling',
+        spelling_rules: 'spellingRules',
+        sight_word_spelling: 'sightWordSpelling',
+        simple_sentences: 'simpleSentences',
+        expanded_sentences: 'expandedSentences',
+        compound_sentences: 'compoundSentences',
+        punctuation_practice: 'punctuationPractice',
+        writing_planning: 'writingPlanning',
+        paragraph_writing: 'paragraphWriting',
+        story_writing: 'storyWriting',
+        revision_editing: 'revisionEditing',
+      };
+      // Handle letter_formation with sub_type distinction
+      if (actType === 'letter_formation') {
+        return subType === 'curved_strokes' ? ['curvedLetterFormation'] : ['simpleLetterFormation'];
+      }
+      if (actType && ACTIVITY_TYPE_MAP[actType]) {
+        return [ACTIVITY_TYPE_MAP[actType]];
+      }
+      return ['letterForming', 'handwriting'];
+    }
     case 'dyscalculia': {
       // Use chapter-specific games from content_config if available
       const configGames = contentConfig?.activity?.games as string[] | undefined;
@@ -239,6 +314,26 @@ function renderGame(game: GameType, difficulty: DifficultyType, onComplete: (sco
     case 'comprehension': return <ComprehensionGame {...props} />;
     case 'letterForming': return <LetterFormingGame {...props} />;
     case 'handwriting': return <HandwritingPracticeGame {...props} />;
+    case 'gripTraining': return <GripTrainingGame {...props} />;
+    case 'shapeTracing': return <ShapeTracingGame {...props} />;
+    case 'eyeHandCoordination': return <EyeHandCoordinationGame {...props} />;
+    case 'spatialAwareness': return <SpatialAwarenessGame {...props} />;
+    case 'simpleLetterFormation': return <SimpleLetterFormationGame {...props} />;
+    case 'curvedLetterFormation': return <CurvedLetterFormationGame {...props} />;
+    case 'uppercaseMatching': return <UppercaseMatchingGame {...props} />;
+    case 'turkishSpecialChars': return <TurkishSpecialCharsGame {...props} />;
+    case 'phonicsSpelling': return <PhonicsSpellingGame {...props} />;
+    case 'syllableSpelling': return <SyllableSpellingGame {...props} />;
+    case 'spellingRules': return <SpellingRulesGame {...props} />;
+    case 'sightWordSpelling': return <SightWordSpellingGame {...props} />;
+    case 'simpleSentences': return <SimpleSentencesGame {...props} />;
+    case 'expandedSentences': return <ExpandedSentencesGame {...props} />;
+    case 'compoundSentences': return <CompoundSentencesGame {...props} />;
+    case 'punctuationPractice': return <PunctuationPracticeGame {...props} />;
+    case 'writingPlanning': return <WritingPlanningGame {...props} />;
+    case 'paragraphWriting': return <ParagraphWritingGame {...props} />;
+    case 'storyWriting': return <StoryWritingGame {...props} />;
+    case 'revisionEditing': return <RevisionEditingGame {...props} />;
     case 'numberLine': return <NumberLineGame {...props} />;
     case 'counting': return <CountingGame {...props} />;
     case 'concreteCount': return <ConcreteCountingGame {...props} />;
